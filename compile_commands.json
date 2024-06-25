@@ -7,6 +7,12 @@
 },
 {
   "directory": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/build/src/backstage",
+  "command": "/usr/sbin/c++ -DDEBUG -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/backstage/include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/extern/include -g -std=c++23 -Wall -o CMakeFiles/Backstage_Lib.dir/customer.cpp.o -c /home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/backstage/customer.cpp",
+  "file": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/backstage/customer.cpp",
+  "output": "src/backstage/CMakeFiles/Backstage_Lib.dir/customer.cpp.o"
+},
+{
+  "directory": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/build/src/backstage",
   "command": "/usr/sbin/c++ -DDEBUG -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/backstage/include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/extern/include -g -std=c++23 -Wall -o CMakeFiles/Backstage_Lib.dir/event.cpp.o -c /home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/backstage/event.cpp",
   "file": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/backstage/event.cpp",
   "output": "src/backstage/CMakeFiles/Backstage_Lib.dir/event.cpp.o"
@@ -16,12 +22,6 @@
   "command": "/usr/sbin/c++ -DDEBUG -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/./include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/../backstage/include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/extern/include -g -std=c++23 -Wall -o CMakeFiles/app.dir/main.cpp.o -c /home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/main.cpp",
   "file": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/main.cpp",
   "output": "src/main/CMakeFiles/app.dir/main.cpp.o"
-},
-{
-  "directory": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/build/test/backstage",
-  "command": "/usr/sbin/c++ -DDEBUG -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/backstage/include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/test/backstage/./include -g -std=c++23 -Wall -o CMakeFiles/backstage.dir/base_utility_test.cpp.o -c /home/lin17_2/workspace/contest/big_work/data_structure/simulation/test/backstage/base_utility_test.cpp",
-  "file": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/test/backstage/base_utility_test.cpp",
-  "output": "test/backstage/CMakeFiles/backstage.dir/base_utility_test.cpp.o"
 },
 {
   "directory": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/build/test/backstage",

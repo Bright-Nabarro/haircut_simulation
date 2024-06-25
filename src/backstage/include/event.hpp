@@ -1,11 +1,18 @@
 #pragma once
+#include "base_utility.hpp"
+
+namespace simulation
+{
 
 class Event
 {
 public:
+	Event(const Tick& tick): m_tick { tick }
+	{ }
 	virtual ~Event() = default;
 	virtual void execve() const = 0;
 private:
+	Tick m_tick;
 };
 
 
@@ -39,3 +46,5 @@ public:
 	void execve() const override;
 private:
 };
+
+}	//namespace simulation

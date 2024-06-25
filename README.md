@@ -23,4 +23,3 @@ src/
 
 ## test
 
-1. [类](https://github.com/Bright-Nabarro/haircut_simulation/blob/main/doc/1.md)

@@ -1,10 +1,10 @@
-#include "base_utility.hpp"
 #include <format>
+#include "base_utility.hpp"
 #include "exception.hpp"
-using namespace std;
 
 namespace simulation
 {
+using namespace std;
 
 Tick::Tick(uint h, uint m, uint s)
 {
@@ -14,25 +14,26 @@ Tick::Tick(uint h, uint m, uint s)
 	s_tick2hmsTable[m_timestamp] = hms;
 }
 
-bool Tick::operator==(const Tick& rhs) const noexcept
+bool Tick::operator==(const Tick& rhs)const noexcept
 {
 	return m_timestamp == rhs.m_timestamp;
 }
 
-auto Tick::operator<=>(const Tick& rhs) const noexcept
+auto Tick::operator<=>(const Tick& rhs)const noexcept
+-> std::strong_ordering 
 {
 	return m_timestamp <=> rhs.m_timestamp;
 }
 
-string Tick::to_string() const 
-{
-	decltype(auto) hms {tick2hms()};
-	return format("\t{}:\t{}:\t{}", hms.hour, hms.min, hms.sec);
-}
-
 void Tick::increament(uint h, uint m, uint s)
 {
-	decltype(auto) hms { tick2hms() };
+	decltype(auto) thisHms { tick2hms() };
+	Hms hms {
+		.hour = thisHms.hour + h,
+		.min = thisHms.min + m, 
+		.sec = thisHms.sec + s,
+	};
+
 	m_timestamp = hms2tick(hms);
 	s_tick2hmsTable[m_timestamp] = hms;
 }
@@ -45,7 +46,6 @@ auto Tick::tick2hms() const -> const Hms&
 	
 	return itr->second;
 }
-
 
 uint64_t Tick::hms2tick(const Hms& hms)
 {
@@ -65,3 +65,4 @@ void Tick::check_valid(uint h, uint m, uint s)
 }
 
 }		//namespace simulation
+
