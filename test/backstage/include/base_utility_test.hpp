@@ -1,12 +1,11 @@
 #pragma once
-#include <cassert>
-#include <print>
+#include <functional>
+#include <unordered_set>
+#include <unordered_map>
 #include "base_utility.hpp"
 #include "exception.hpp"
+#include "test_header.hpp"
 
-//测试函数只会调用一次，简化起见在头文件定义，使用强制内联
-
-#define TPF [[gnu::always_inline]] inline 	//后一个inline只是为了消除静态检测警告
 
 TPF
 void test_Tick_ini()
@@ -117,3 +116,208 @@ void test_Tick_inc()
 	assert(tick6 == tick7);
 }
 
+struct S1
+{
+};
+
+struct S2
+{
+};
+
+TPF
+void test_Id_ini()
+{
+	using namespace simulation;
+	Id<S1> ids1_1;
+	Id<S1> ids1_2;
+	Id<S2> ids2_1;
+	Id<S2> ids2_2;
+	Id<int> i1;
+	Id<void> i2;
+}
+
+TPF
+void test_Id_get_number(bool display = false)
+{
+	struct A
+	{
+	};
+	
+	struct B
+	{
+	};
+
+	using namespace simulation;
+	Id<A> idA1;
+	Id<A> idA2;
+	Id<B> idB1;
+	Id<B> idB2;
+	if (display)
+	{
+		std::println("idA1 number: {}", idA1.get_id_number());
+		std::println("idA2 number: {}", idA2.get_id_number());
+		std::println("idB1 number: {}", idB1.get_id_number());
+		std::println("idB2 number: {}", idB2.get_id_number());
+	}
+	assert(idA1.get_id_number() == 0);
+	assert(idA2.get_id_number() == 1);
+	assert(idB1.get_id_number() == 0);
+	assert(idB2.get_id_number() == 1);
+
+	{
+		Id<A> idA3;
+		assert(idA3.get_id_number() == 2);
+	}
+
+	Id<A> idA4;
+	assert(idA4.get_id_number() == 3);
+}
+
+
+TPF
+void test_Id_cpr()
+{
+	struct A
+	{
+	};
+	
+	struct B
+	{
+	};
+
+	using namespace simulation;
+	Id<A> idA1;
+	Id<A> idA2;
+	Id<B> idB1;
+	
+	const auto& idA1Ref { idA1 };
+	assert(idA1Ref == idA1);
+	//idA1 != idB1;
+	assert(idA1 != idA2);
+	assert(idA1Ref != idA2);
+	assert(idA1 < idA2);
+	assert(idA1 <= idA2);
+	assert(idA2 > idA1);
+	assert(idA2 >= idA1);
+}
+
+TPF
+void test_Id_ownership(bool display = false)
+{
+	using namespace simulation;
+	using namespace std;
+	struct A{};
+	Id<A> idA1;
+	auto idR1 { cref(idA1) };
+	assert(idR1.get() == idA1);
+	assert(idR1 == idA1);
+	Id<A> idA2;
+	idR1 = cref(idA2);
+	assert(idR1 != idA1);
+	assert(idR1 == idA2);
+
+	optional<reference_wrapper<Id<A>>> optIdR1;
+	optIdR1.emplace(idA1);
+	assert(optIdR1.value() == idA1);
+
+	struct B{};
+	Id<B> idB1{};
+	Id<B> idB2{};
+	Id<B> idB3{};
+	unordered_set<reference_wrapper<const Id<B>>> bset;
+	bset.insert(ref(idB1));
+	bset.insert(ref(idB2));
+	bset.insert(ref(idB3));
+	for(const auto& x : bset)
+	{
+		if(display)
+			println("{}", x.get().get_id_number());
+	}
+
+	struct C{};
+	struct hashRef
+	{
+		auto operator()(const reference_wrapper<const Id<C>>& rhs) const
+		{
+			return hash<size_t>{}(rhs.get().get_id_number());
+		}
+	};
+	struct equalRef
+	{
+		bool operator()(const reference_wrapper<const Id<C>>& lhs,
+						const reference_wrapper<const Id<C>>& rhs) const
+		{
+			return lhs.get().get_id_number() == rhs.get().get_id_number();
+		}
+	};
+	vector<Id<C>> vecIdC;
+	unordered_set<reference_wrapper<const Id<C>>> cset;
+	for (size_t i{0}; i < 3; i++)
+	{
+		vecIdC.emplace_back();
+	}
+	for (const auto& x : vecIdC)
+	{
+		cset.insert(ref(x));
+	}
+}
+
+TPF
+void test_hash_equal_Id(bool display = false)
+{
+	using namespace simulation;
+	using namespace std;
+
+	struct A {};
+	Id<A> idA1;
+	Id<A> idA2;
+	Id<A> idA3;
+	Id<A> idA4;
+	if (display)
+	{
+		std::println("{}", std::hash<decltype(idA1)>{}(idA1)); 
+		std::println("{}", std::hash<decltype(idA1)>{}(idA2)); 
+		std::println("{}", std::hash<decltype(idA1)>{}(idA3)); 
+		std::println("{}", std::hash<decltype(idA1)>{}(idA4)); 
+	}
+	
+	auto IdAR1 { cref(idA1) };
+	auto IdAR2 { cref(idA1) };
+	assert(IdAR1 == IdAR2);
+
+	struct B {};
+
+	vector<Id<B>> idBList;
+	unordered_set<reference_wrapper<const Id<B>>> idBSet;
+
+	unordered_set<Id<B>*> pSet;
+	
+	for (size_t i{0}; i < 100; i++)
+	{
+		idBList.emplace_back();
+	}
+	size_t listSum{0}, setSum{0};
+	for (const auto& x : idBList)
+	{
+		idBSet.insert(cref(x));
+		listSum += x.get_id_number();
+	}
+	
+	for (const auto& x : idBSet)
+	{
+		if (display)
+			println("set idB {}", x.get().get_id_number());
+		setSum += x.get().get_id_number();
+	}
+	for (const auto& x : pSet)
+	{
+		if (display)
+			println("setp idB {}", x->get_id_number());
+	}
+
+	if (display)
+		println("set size : {}", idBSet.size());
+
+	assert(listSum == setSum);
+	
+}

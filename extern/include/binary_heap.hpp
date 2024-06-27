@@ -10,6 +10,9 @@
 #endif
 #include <algorithm>
 
+/*
+ * 暂不支持无默认构造的类型，可以使用指针来简单替换(需要自定义Comp函数)
+ */
 template<typename C, typename Ty>
 concept Comparator = requires(C cpr, Ty a, Ty b)
 {

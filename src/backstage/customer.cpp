@@ -3,15 +3,15 @@
 namespace simulation
 {
 
-Customer::Customer(Level level, double timeFactor, int maxWaitingTime):
+Customer::Customer(Level level, double timeFactor, size_t maxWaitingTime):
 	m_id{}, m_level { level }, m_timeFactor { timeFactor }, m_maxWaitingTime { maxWaitingTime },
 	m_haircutStarted { false }
 { }
 
 [[nodiscard]]
-size_t Customer::get_id() const noexcept
+const Id<Customer>& Customer::get_id() const noexcept
 {
-	return m_id.get();
+	return m_id;
 }
 
 [[nodiscard]]
@@ -27,7 +27,7 @@ double Customer::get_time_factor() const noexcept
 }
 
 [[nodiscard]]
-int Customer::get_max_waiting_time() const noexcept
+size_t Customer::get_max_waiting_time() const noexcept
 {
 	return m_maxWaitingTime;
 }

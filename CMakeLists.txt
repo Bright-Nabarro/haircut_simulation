@@ -23,7 +23,9 @@ add_subdirectory("src/backstage")
 add_subdirectory("src/main")
 
 #单元测试
-add_subdirectory("test/backstage")
+if(ENABLE_DEBUG)
+	add_subdirectory("test/backstage")
+endif()
 
 #将clangd_custom_target复制到CMakeLists.txt所在目录
 add_custom_target(move_compile_commands ALL

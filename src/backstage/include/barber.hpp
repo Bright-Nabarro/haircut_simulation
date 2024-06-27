@@ -1,7 +1,8 @@
 #pragma once
 #include <optional>
-#include "customer.hpp"
+#include <functional>
 #include "base_utility.hpp"
+#include "customer.hpp"
 
 namespace simulation
 {
@@ -10,6 +11,7 @@ class Barber
 {
 public:
 	Barber(Level level, double timeFactor);
+	//这里不提供等级是否匹配的检查，需要在上层手动检查
 	Barber(Level level, double timeFactor, const Id<Customer>& customerId);
 	virtual ~Barber() = default;
 	
@@ -28,8 +30,8 @@ public:
 	[[nodiscard]]
 	const Id<Customer>& get_customer_id() const;
 
-	[[nodiscard]]
-	const Id<Barber>& get_barber_id() const;
+	void set_customer_id(const Id<Customer>& customerId);
+	void release_customer();
 
 private:
 	const Id<Barber> m_id;
