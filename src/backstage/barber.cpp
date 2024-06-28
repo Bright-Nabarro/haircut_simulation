@@ -57,7 +57,7 @@ double Barber::get_time_factor() const noexcept
 [[nodiscard]]
 bool Barber::busy() const noexcept
 {
-	return m_pCustomerId == nullptr;
+	return !(m_pCustomerId == nullptr);
 }
 
 [[nodiscard]]

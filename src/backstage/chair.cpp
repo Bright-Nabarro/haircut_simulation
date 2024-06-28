@@ -39,7 +39,7 @@ bool Chair::busy() const
 		throw logic_error { "Chair's pIdPair's status does not match" };
 	}
 
-	return m_pIdPair.first == nullptr;
+	return !(m_pIdPair.first == nullptr);
 }
 
 [[nodiscard]]
