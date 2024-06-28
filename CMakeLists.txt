@@ -14,7 +14,18 @@ else()
 	set(CMAKE_BUILD_TYPE Release)
 endif()
 
-add_compile_options(-Wall)
+add_compile_options(
+	-Wall
+	-Wextra
+	-Weffc++
+	-Wpedantic
+    -Wshadow
+    -Wnon-virtual-dtor
+    -Wold-style-cast
+    -Woverloaded-virtual
+    -Wconversion
+    -Wsign-conversion
+)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 

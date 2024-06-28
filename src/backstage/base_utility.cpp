@@ -6,7 +6,8 @@ namespace simulation
 {
 using namespace std;
 
-Tick::Tick(size_t h, size_t m, size_t s)
+Tick::Tick(size_t h, size_t m, size_t s) :
+	m_timestamp {0}
 {
 	check_valid(h, m, s);	
 	Hms hms {.hour = h, .min = m, .sec = s};
@@ -68,13 +69,13 @@ uint64_t Tick::hms2tick(const Hms& hms)
 
 void Tick::check_valid(size_t h, size_t m, size_t s)
 {
-	if (h < 0 || h > 24)
+	if (h > 24)
 		throw InvalidTimepoint { format("input hours: {} invalid", h) };
 
-	if (m < 0 || m >= 60)
+	if (m >= 60)
 		throw InvalidTimepoint { format("input minutes: {} invalid", m) };
 
-	if (s < 0 || s >= 60)
+	if (s >= 60)
 		throw InvalidTimepoint { format("input second: {} invalid", s) };
 }
 

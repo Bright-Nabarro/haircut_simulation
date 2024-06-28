@@ -63,10 +63,8 @@ public:
 
 	Id& operator=(const Id&) = delete;
 
-	Id(Id&& rhs)
-	{
-		m_id = rhs.m_id;
-	}
+	Id(Id&& rhs) : m_id { rhs.m_id }
+	{ }
 
 	Id& operator=(Id&& rhs)
 	{

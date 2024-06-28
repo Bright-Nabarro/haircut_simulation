@@ -2,6 +2,7 @@
 #include "base_utility_test.hpp"
 #include "cust_barb_chr_test.hpp"
 #include "object_manager_test.hpp"
+#include "factory_test.hpp"
 
 static void base_utility_test()
 {
@@ -35,7 +36,18 @@ static void cust_barb_chr_test()
 
 static void object_manager_test()
 {
-	test_ini();
+	test_om_ini();
+	test_om_register();
+	test_om_get();
+	test_om_remove();
+	test_om_complex();
+}
+
+static void factory_test()
+{
+	test_fac_ini();
+	test_fac_create();
+	test_fac_complex();
 }
 
 int main()
@@ -43,5 +55,6 @@ int main()
 	base_utility_test();
 	cust_barb_chr_test();
 	object_manager_test();
+	factory_test();
 	std::println("((>ω<))↗ok");
 }
