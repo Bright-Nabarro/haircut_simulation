@@ -7,25 +7,39 @@ namespace simulation
 {
 
 Barber::Barber(Level level, double timeFactor) :
-	m_id{}, m_level { level }, m_timeFactor { timeFactor },
-	m_customerId { nullopt }, m_totalWorktime {0}
+	m_pId { make_shared<Id<Barber>>() },
+ 	m_level { level },
+	m_timeFactor { timeFactor },
+	m_pCustomerId { nullptr }, 
+	m_totalWorktime {0}
 {
 	if (m_level == Level::FAST)
 		throw invalid_argument { "Barber's Level cannot be FAST" };
 	check_time_factor(m_timeFactor);
 }
 
-Barber::Barber(Level level, double timeFactor, const Id<Customer>& customerId) :
-	m_id{}, m_level { level }, m_timeFactor { timeFactor },
-	m_customerId { ref(customerId) }, m_totalWorktime {0}
+Barber::Barber(Level level, double timeFactor, std::shared_ptr<Id<Customer>> pCustomerId) :
+	m_pId { make_shared<Id<Barber>>() },
+	m_level { level },
+	m_timeFactor { timeFactor },
+	m_pCustomerId { pCustomerId },
+	m_totalWorktime {0}
 {
 	check_time_factor(m_timeFactor);
 }
 
 [[nodiscard]]
-const Id<Barber>&  Barber::get_id() const noexcept
+const Id<Barber>& Barber::get_id() const
 {
-	return m_id;
+	if (get_shared() == nullptr)
+		throw logic_error { " Barber id ptr is null " };
+	return *get_shared();
+}
+
+[[nodiscard]]
+std::shared_ptr<Id<Barber>> Barber::get_shared() const
+{
+	return m_pId;
 }
 
 [[nodiscard]]
@@ -43,7 +57,7 @@ double Barber::get_time_factor() const noexcept
 [[nodiscard]]
 bool Barber::busy() const noexcept
 {
-	return m_customerId.has_value();
+	return m_pCustomerId == nullptr;
 }
 
 [[nodiscard]]
@@ -52,19 +66,19 @@ const Id<Customer>& Barber::get_customer_id() const
 	if (!busy())
 		throw logic_error { format("m_customerId does not store member") };
 	
-	return m_customerId.value().get();
+	return *m_pCustomerId;
 }
 	
-void Barber::set_customer_id(const Id<Customer>& customerId)
+void Barber::set_customer_id(std::shared_ptr<Id<Customer>> pCustomerId)
 {
-	m_customerId.emplace(cref(customerId));
+	m_pCustomerId = pCustomerId;
 }
 
 void Barber::release_customer()
 {
 	if (!busy())
 		throw logic_error { "Barber dose not store a customerId" };
-	m_customerId.reset();
+	m_pCustomerId.reset();
 }
 
 }		//namespace simulation

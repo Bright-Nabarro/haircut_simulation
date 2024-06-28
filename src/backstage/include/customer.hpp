@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include "base_utility.hpp"
 
 namespace simulation
@@ -11,7 +12,10 @@ public:
 	virtual ~Customer() = default;
 
 	[[nodiscard]]
-	const Id<Customer>& get_id() const noexcept;
+	const Id<Customer>& get_id() const;
+
+	[[nodiscard]]
+	std::shared_ptr<Id<Customer>> get_shared() const;
 
 	[[nodiscard]]
 	Level get_level() const noexcept;
@@ -28,7 +32,7 @@ public:
 	void start_cuting_hear() noexcept;
 
 private:
-	const Id<Customer> m_id;
+	const std::shared_ptr<Id<Customer>> m_pId;
 	const Level m_level;
 	const double m_timeFactor;	//消耗时间系数
 	const size_t m_maxWaitingTime; //最长等待时间

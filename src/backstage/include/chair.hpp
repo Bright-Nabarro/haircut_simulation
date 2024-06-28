@@ -1,6 +1,4 @@
 #pragma once
-#include <utility>
-#include <functional>
 #include "customer.hpp"
 #include "barber.hpp"
 #include "base_utility.hpp"
@@ -13,14 +11,17 @@ class Chair
 public:
 	Chair();
 	//这里不提供Barber和Customer的匹配检查，需要在上级完成
-	Chair(const Id<Customer>& customerId, const Id<Barber>& barberId);
+	Chair(std::shared_ptr<Id<Customer>> pCustomerId, std::shared_ptr<Id<Barber>> pBarberId);
 	virtual ~Chair() = default;
 
 	[[nodiscard]]
-	const Id<Chair>& get_id() const noexcept;
+	const Id<Chair>& get_id() const;
 
 	[[nodiscard]]
-	bool busy() const noexcept;
+	std::shared_ptr<Id<Chair>> get_shared() const;
+
+	[[nodiscard]]
+	bool busy() const;
 
 	[[nodiscard]]
 	const Id<Customer>& get_customer_id() const;
@@ -28,18 +29,15 @@ public:
 	[[nodiscard]]
 	const Id<Barber>& get_barber_id() const;
 
-	void set_customer_barber(const Id<Customer>& customerId, const Id<Barber>& barberId);
+	void set_customer_barber(std::shared_ptr<Id<Customer>> pCustomerId, std::shared_ptr<Id<Barber>> pBarberId);
 	void release();
 
 private:
 	void check_bind() const;
 
 private:
-	Id<Chair> m_id;
-	std::optional<
-		std::pair<std::reference_wrapper<const Id<Customer>>,
-		std::reference_wrapper<const Id<Barber>> >
-	> m_cbId;
+	std::shared_ptr<Id<Chair>> m_pId;
+	std::pair<std::shared_ptr<Id<Customer>>, std::shared_ptr<Id<Barber>>> m_pIdPair;
 };
 
 }	//namespace simulation

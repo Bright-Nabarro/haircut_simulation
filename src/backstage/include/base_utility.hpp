@@ -48,9 +48,6 @@ private:
 
 /*
  * 模板类型仅作为不同类的内部计数器的区分
- * 使用此类的reference_wrapper注意加上const限定
- * 被container储存时，记得一定要等待container将所有元素都存储完毕后再构造reference_wrapper
- * 容器在被reference_wrapper引用时不允许改变
  *
  */
 template<typename UserClass>
