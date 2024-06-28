@@ -28,10 +28,24 @@ auto Tick::operator<=>(const Tick& rhs)const noexcept
 void Tick::increament(size_t h, size_t m, size_t s)
 {
 	decltype(auto) thisHms { tick2hms() };
+	size_t hour = thisHms.hour + h;
+	size_t min = thisHms.min + m;
+	size_t sec = thisHms.sec + s;
+	if ( sec >= 60 )
+	{
+		min++;
+		sec -= 60;
+	}
+	if ( min >= 60 )
+	{
+		hour++;
+		min -= 60;
+	}
+
 	Hms hms {
-		.hour = thisHms.hour + h,
-		.min = thisHms.min + m, 
-		.sec = thisHms.sec + s,
+		.hour = hour,
+		.min = min,
+		.sec = sec,
 	};
 
 	m_timestamp = hms2tick(hms);
@@ -54,7 +68,7 @@ uint64_t Tick::hms2tick(const Hms& hms)
 
 void Tick::check_valid(size_t h, size_t m, size_t s)
 {
-	if (h < 0 || h >= 24)
+	if (h < 0 || h > 24)
 		throw InvalidTimepoint { format("input hours: {} invalid", h) };
 
 	if (m < 0 || m >= 60)

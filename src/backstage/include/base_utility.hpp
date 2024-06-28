@@ -63,9 +63,16 @@ public:
 
 	Id& operator=(const Id&) = delete;
 
-	Id(Id&&) = default;
+	Id(Id&& rhs)
+	{
+		m_id = rhs.m_id;
+	}
 
-	Id& operator=(Id&&) = default;
+	Id& operator=(Id&& rhs)
+	{
+		m_id = rhs.m_id;
+		return *this;
+	}
 
 	[[nodiscard]]
 	size_t get_id_number() const noexcept
@@ -83,7 +90,7 @@ public:
 
 private:
 	inline static size_t s_idCounter {0};
-	const size_t m_id;
+	size_t m_id;
 };
 
 template<typename UserClass>

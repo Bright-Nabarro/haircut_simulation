@@ -14,7 +14,7 @@ static void base_utility_test()
 	test_Id_ini();
 	test_Id_get_number();
 	test_Id_ownership();
-	test_hash_equal_Id();
+	test_hash_equal_Id(true);
 }
 
 static void cust_barb_chr_test()

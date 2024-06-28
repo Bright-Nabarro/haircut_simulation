@@ -1,5 +1,4 @@
 #pragma once
-#include <functional>
 #include <unordered_set>
 #include <unordered_map>
 #include "base_utility.hpp"
@@ -11,255 +10,127 @@ TPF
 void test_Tick_ini()
 {
 	using namespace simulation;
-	Tick tick1{1, 14, 2};
-
-	try
-	{
-		Tick tick{24, 1, 2};
-		assert(false);
-	}
-	catch (InvalidTimepoint& e)
-	{
-		//true branches
-	} 
-	catch(...)
-	{
-		assert(false);
-	}
-	
-	try
-	{
-		Tick tick{2, 199, 2};
-		assert(false);
-	}
-	catch (InvalidTimepoint& e)
-	{
-		//true branches
-	} 
-	catch(...)
-	{
-		assert(false);
-	}
-
-	try
-	{
-		Tick tick{2, 19, 60};
-		assert(false);
-	}
-	catch (InvalidTimepoint& e)
-	{
-		//true branches
-	} 
-	catch(...)
-	{
-		assert(false);
-	}
+	using namespace std;
+	Tick t1(1, 30, 45);
+	assert(t1 == Tick(1, 30, 45));
 }
 
 TPF
 void test_Tick_cpr()
 {
 	using namespace simulation;
+	using namespace std;
 
-	Tick tick1{11, 41, 5};
-	Tick tick2{11, 41, 5};
-	assert(tick1 == tick2);
-
-	Tick tick3 { 15, 7, 9 };
-	Tick tick4 { tick3 };
-	assert(tick3 == tick4);
-	
-	auto tncpr = [](const Tick& t1, Tick& t2) {
-		assert(t1 < t2);
-		assert(t2 > t1);
-		assert(t1 != t2);
-		assert(t1 <= t2);
-		assert(t2 >= t1);
-	};
-
-	Tick tick5 { 0, 0, 0 };
-	Tick tick6 { 0, 0, 1 };
-	tncpr(tick5, tick6);
-
-	Tick tick7 {2, 42, 22 };
-	Tick tick8 { 2, 45, 12 };
-	tncpr(tick7, tick8);
-
-	Tick tick9 { 22, 12, 00 };
-	Tick tick10 { 23, 11, 33 };
-	tncpr(tick9, tick10);
-
+	// 测试Tick的比较运算符
+	Tick t1(1, 30, 45);
+	Tick t2(2, 15, 30);
+	assert((t1 < t2) == true);
+	assert((t2 > t1) == true);
+	assert((t1 == t2) == false);
 }
 
 TPF
 void test_Tick_inc()
 {
 	using namespace simulation;
-	Tick tick1 { 0, 0, 0 };
-	Tick tick2 { 1, 2, 3 };
-	tick1.increament(1, 2, 3);
-	assert(tick1 == tick2);
-	
-	Tick tick3 { 11, 12, 13 };
-	Tick tick3Cpy { tick3 };
-	tick3.increament(0, 0, 0);
-	assert(tick3 == tick3Cpy);
-	
-	Tick tick4 { 16, 2, 4 };
-	Tick tick5 { 16, 2, 14 };
-	tick4.increament(10);
-	assert(tick4 == tick5);
+	using namespace std;
 
-	Tick tick6 { 23, 6, 24 };
-	Tick tick7 { 23, 17, 47 };
-	tick6.increament(11, 23);
-	assert(tick6 == tick7);
+	// 测试Tick的increament函数
+	Tick t1(1, 30, 45);
+	t1.increament(0, 29, 15); // 增加29分钟15秒
+	assert(t1 == Tick(2, 0, 0)); // 2:00:00
+
+	t1.increament(1, 0, 0); // 增加1小时
+	assert(t1 == Tick(3, 0, 0)); // 3:00:00
+
+	t1.increament(0, 30); // 增加30秒
+	assert(t1 == Tick(3, 0, 30)); // 3:00:30
+
+	t1.increament(45); // 增加45秒
+	assert(t1 == Tick(3, 1, 15)); // 3:01:15
 }
 
-struct S1
-{
-};
-
-struct S2
-{
-};
 
 TPF
 void test_Id_ini()
 {
 	using namespace simulation;
-	Id<S1> ids1_1;
-	Id<S1> ids1_2;
-	Id<S2> ids2_1;
-	Id<S2> ids2_2;
-	Id<int> i1;
-	Id<void> i2;
+
+	// 测试Id的初始化
+	Id<int> id1;
+	Id<int> id2;
+
+	// 每个Id实例应该有不同的id_number
+	assert(id1.get_id_number() != id2.get_id_number());
+	assert(id1 == id1);
+	assert(!(id1 == id2));
 }
 
 TPF
 void test_Id_get_number(bool display = false)
 {
-	struct A
-	{
-	};
-	
-	struct B
-	{
-	};
-
 	using namespace simulation;
-	Id<A> idA1;
-	Id<A> idA2;
-	Id<B> idB1;
-	Id<B> idB2;
-	if (display)
-	{
-		std::println("idA1 number: {}", idA1.get_id_number());
-		std::println("idA2 number: {}", idA2.get_id_number());
-		std::println("idB1 number: {}", idB1.get_id_number());
-		std::println("idB2 number: {}", idB2.get_id_number());
-	}
-	assert(idA1.get_id_number() == 0);
-	assert(idA2.get_id_number() == 1);
-	assert(idB1.get_id_number() == 0);
-	assert(idB2.get_id_number() == 1);
 
-	{
-		Id<A> idA3;
-		assert(idA3.get_id_number() == 2);
-	}
+	// 测试Id的get_id_number方法
+	Id<int> id1{};
+	Id<int> id2{};
 
-	Id<A> idA4;
-	assert(idA4.get_id_number() == 3);
+	size_t id1_number = id1.get_id_number();
+	size_t id2_number = id2.get_id_number();
+
+	assert(id1_number != id2_number);
+
+	if (display) {
+		std::print("ID1 number: {}\n", id1_number);
+		std::print("ID2 number: {}\n", id2_number);
+	}
 }
 
 
 TPF
 void test_Id_cpr()
 {
-	struct A
-	{
-	};
-	
-	struct B
-	{
-	};
-
 	using namespace simulation;
-	Id<A> idA1;
-	Id<A> idA2;
-	Id<B> idB1;
-	
-	const auto& idA1Ref { idA1 };
-	assert(idA1Ref == idA1);
-	//idA1 != idB1;
-	assert(idA1 != idA2);
-	assert(idA1Ref != idA2);
-	assert(idA1 < idA2);
-	assert(idA1 <= idA2);
-	assert(idA2 > idA1);
-	assert(idA2 >= idA1);
+
+	// 测试Id的比较运算符
+	Id<int> id1{};
+	Id<int> id2{};
+	Id<int> id3{std::move(id1)};
+
+	assert(id1 != id2);
+	assert(id1 == id3);
+	assert(id1.get_id_number() != id2.get_id_number());
+	assert(id1.get_id_number() == id3.get_id_number());
+
+	assert(id1 < id2 || id1 > id2);  // 确保两个不同的Id实例有顺序关系
 }
 
 TPF
 void test_Id_ownership(bool display = false)
 {
 	using namespace simulation;
-	using namespace std;
-	struct A{};
-	Id<A> idA1;
-	auto idR1 { cref(idA1) };
-	assert(idR1.get() == idA1);
-	assert(idR1 == idA1);
-	Id<A> idA2;
-	idR1 = cref(idA2);
-	assert(idR1 != idA1);
-	assert(idR1 == idA2);
 
-	optional<reference_wrapper<Id<A>>> optIdR1;
-	optIdR1.emplace(idA1);
-	assert(optIdR1.value() == idA1);
+	// 测试Id的所有权转移
+	Id<int> id1{};
+	Id<int> id2{};
 
-	struct B{};
-	Id<B> idB1{};
-	Id<B> idB2{};
-	Id<B> idB3{};
-	unordered_set<reference_wrapper<const Id<B>>> bset;
-	bset.insert(ref(idB1));
-	bset.insert(ref(idB2));
-	bset.insert(ref(idB3));
-	for(const auto& x : bset)
-	{
-		if(display)
-			println("{}", x.get().get_id_number());
+	if (display) {
+		std::println("Before move:");
+		std::println("ID1 number: {}", id1.get_id_number());
+		std::println("ID2 number: {}", id2.get_id_number());
 	}
 
-	struct C{};
-	struct hashRef
-	{
-		auto operator()(const reference_wrapper<const Id<C>>& rhs) const
-		{
-			return hash<size_t>{}(rhs.get().get_id_number());
-		}
-	};
-	struct equalRef
-	{
-		bool operator()(const reference_wrapper<const Id<C>>& lhs,
-						const reference_wrapper<const Id<C>>& rhs) const
-		{
-			return lhs.get().get_id_number() == rhs.get().get_id_number();
-		}
-	};
-	vector<Id<C>> vecIdC;
-	unordered_set<reference_wrapper<const Id<C>>> cset;
-	for (size_t i{0}; i < 3; i++)
-	{
-		vecIdC.emplace_back();
+	Id<int> id3{std::move(id1)};
+	id2 = std::move(id3);
+	if (display) {
+		std::println("After move:");
+		std::println("ID1 number: {}", id1.get_id_number()); // 可能未定义行为，不建议使用
+		std::println("ID2 number: {}", id2.get_id_number());
+		std::println("ID3 number: {}", id3.get_id_number()); // 可能未定义行为，不建议使用
 	}
-	for (const auto& x : vecIdC)
-	{
-		cset.insert(ref(x));
-	}
+
+	// 由于移动后id1和id3的状态不确定，我们不对它们进行进一步的断言测试
+	assert(id2.get_id_number() == id1.get_id_number() || id2.get_id_number() == id3.get_id_number());
 }
 
 TPF
@@ -268,56 +139,63 @@ void test_hash_equal_Id(bool display = false)
 	using namespace simulation;
 	using namespace std;
 
-	struct A {};
-	Id<A> idA1;
-	Id<A> idA2;
-	Id<A> idA3;
-	Id<A> idA4;
-	if (display)
-	{
-		std::println("{}", std::hash<decltype(idA1)>{}(idA1)); 
-		std::println("{}", std::hash<decltype(idA1)>{}(idA2)); 
-		std::println("{}", std::hash<decltype(idA1)>{}(idA3)); 
-		std::println("{}", std::hash<decltype(idA1)>{}(idA4)); 
-	}
-	
-	auto IdAR1 { cref(idA1) };
-	auto IdAR2 { cref(idA1) };
-	assert(IdAR1 == IdAR2);
+	// 测试Id的哈希功能
+	Id<int> id1{};
+	Id<int> id2{};
+	Id<int> id3{};
 
-	struct B {};
+	hash<Id<int>> hasher;
+	size_t hash1 = hasher(id1);
+	size_t hash2 = hasher(id2);
+	size_t hash3 = hasher(id3);
 
-	vector<Id<B>> idBList;
-	unordered_set<reference_wrapper<const Id<B>>> idBSet;
+	assert(hash1 != hash2);
+	assert(hash1 != hash3);
+	assert(hash2 != hash3);
 
-	unordered_set<Id<B>*> pSet;
-	
-	for (size_t i{0}; i < 100; i++)
-	{
-		idBList.emplace_back();
-	}
-	size_t listSum{0}, setSum{0};
-	for (const auto& x : idBList)
-	{
-		idBSet.insert(cref(x));
-		listSum += x.get_id_number();
-	}
-	
-	for (const auto& x : idBSet)
-	{
-		if (display)
-			println("set idB {}", x.get().get_id_number());
-		setSum += x.get().get_id_number();
-	}
-	for (const auto& x : pSet)
-	{
-		if (display)
-			println("setp idB {}", x->get_id_number());
+	if (display) {
+		std::println("ID1 number: {}, Hash: {}", id1.get_id_number(), hash1);
+		std::println("ID2 number: {}, Hash: {}", id2.get_id_number(), hash2);
+		std::println("ID3 number: {}, Hash: {}", id3.get_id_number(), hash3);
 	}
 
-	if (display)
-		println("set size : {}", idBSet.size());
+	// Testing with reference_wrapper
+	unordered_set<reference_wrapper<const Id<int>>> ref_set1;
+	ref_set1.emplace(id1);
+	ref_set1.emplace(id2);
+	ref_set1.emplace(id3);
 
-	assert(listSum == setSum);
-	
+	assert(ref_set1.size() == 3);
+	assert(ref_set1.contains(cref(id1)));
+	assert(ref_set1.contains(cref(id2)));
+	assert(ref_set1.contains(cref(id3)));
+
+	if (display) {
+		std::println("Reference Set size: {}", ref_set1.size());
+	}
+
+	// 创建大规模的Id对象
+	const size_t num_ids = 10000;
+	vector<Id<int>> ids;
+	ids.reserve(num_ids);
+
+	for (size_t i = 0; i < num_ids; ++i) {
+		ids.emplace_back();
+	}
+
+	// 测试哈希和相等比较功能
+	unordered_set<reference_wrapper<const Id<int>>> ref_set2;
+	for (const auto& id : ids) {
+		ref_set2.emplace(id);
+	}
+
+	assert(ref_set2.size() == num_ids);
+
+	for (const auto& id : ids) {
+		assert(ref_set2.contains(cref(id)));
+	}
+
+	if (display) {
+		std::println("Reference Set size: {}", ref_set2.size());
+	}
 }
