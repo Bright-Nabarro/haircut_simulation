@@ -3,6 +3,7 @@
 #include "customer.hpp"
 #include "barber.hpp"
 #include "chair.hpp"
+#include "object_manager.hpp"
 
 TPF
 void test_customer_ini()
@@ -224,4 +225,101 @@ void test_chair_modifier(bool display = false)
 		std::println("Chair is busy with new Customer ID: {}", chair.get_customer_id().get_id_number());
 		std::println("Chair is busy with new Barber ID: {}", chair.get_barber_id().get_id_number());
 	}
+}
+
+TPF
+void test_barber_manager_ini()
+{
+	using namespace simulation;
+	using SimulationManager = ObjectManager<Customer, Barber, Chair, A>;
+	SimulationManager objManager;
+	BarberManager<SimulationManager> barberManager { objManager };
+	barberManager.get_free_barber(Level::BEG);
+	try
+	{
+		barberManager.free_barber(Id<Barber>{});
+	}
+	catch(...)
+	{
+	}
+}
+
+TPF 
+void test_barber_manager_get_free_barber()
+{
+	using namespace simulation;
+	using M2 = ObjectManager<Customer, Barber, Chair, B>;
+	M2 objManager;
+	 // 创建Customer和Barber对象
+    auto customer1 = std::make_shared<Customer>(Level::INT, 1.5, 30);
+    auto customer2 = std::make_shared<Customer>(Level::ADV, 2.0, 45);
+
+    auto barber1 = std::make_shared<Barber>(Level::INT, 1.5, customer1->get_shared());
+    auto barber2 = std::make_shared<Barber>(Level::ADV, 2.0, customer2->get_shared());
+    auto barber3 = std::make_shared<Barber>(Level::BEG, 1.0);
+
+    // 获取Id
+    const auto& customer1Id = customer1->get_id();
+    const auto& customer2Id = customer2->get_id();
+    const auto& barber1Id = barber1->get_id();
+    const auto& barber2Id = barber2->get_id();
+    const auto& barber3Id = barber3->get_id();
+
+    // 注册Customer和Barber对象到ObjectManager中
+    objManager.register_obj(customer1Id, customer1);
+    objManager.register_obj(customer2Id, customer2);
+    objManager.register_obj(barber1Id, barber1);
+    objManager.register_obj(barber2Id, barber2);
+    objManager.register_obj(barber3Id, barber3);
+
+	BarberManager<M2> barberManager { objManager };
+	auto pBarber1 { barberManager.get_free_barber(Level::INT) };
+	assert(pBarber1 == nullptr);
+	auto pBarber2 { barberManager.get_free_barber(Level::ADV) };
+	assert(pBarber2 == nullptr);
+	auto pBarber3 { barberManager.get_free_barber(Level::BEG) };
+	assert(pBarber3 != nullptr);
+	assert(pBarber3 == barber3);
+}
+
+TPF
+void test_barber_set_free()
+{
+	using namespace simulation;
+	using M3 = ObjectManager<Customer, Barber, Chair, C>;
+	M3 objManager;
+	 // 创建Customer和Barber对象
+    auto customer1 = std::make_shared<Customer>(Level::INT, 1.5, 30);
+    auto customer2 = std::make_shared<Customer>(Level::ADV, 2.0, 45);
+
+    auto barber1 = std::make_shared<Barber>(Level::INT, 1.5, customer1->get_shared());
+    auto barber2 = std::make_shared<Barber>(Level::ADV, 2.0, customer2->get_shared());
+    auto barber3 = std::make_shared<Barber>(Level::BEG, 1.0);
+
+    // 获取Id
+    const auto& customer1Id = customer1->get_id();
+    const auto& customer2Id = customer2->get_id();
+    const auto& barber1Id = barber1->get_id();
+    const auto& barber2Id = barber2->get_id();
+    const auto& barber3Id = barber3->get_id();
+
+    // 注册Customer和Barber对象到ObjectManager中
+    objManager.register_obj(customer1Id, customer1);
+    objManager.register_obj(customer2Id, customer2);
+    objManager.register_obj(barber1Id, barber1);
+    objManager.register_obj(barber2Id, barber2);
+    objManager.register_obj(barber3Id, barber3);
+
+	BarberManager<M3> barberManager { objManager };
+	barberManager.free_barber(barber1Id);
+	barberManager.free_barber(barber2Id);
+	auto pBarber1 { barberManager.get_free_barber(Level::INT) };
+	assert(pBarber1 != nullptr);
+	assert(pBarber1 == barber1);
+	auto pBarber2 { barberManager.get_free_barber(Level::ADV) };
+	assert(pBarber2 != nullptr);
+	assert(pBarber2 == barber2);
+	auto pBarber3 { barberManager.get_free_barber(Level::BEG) };
+	assert(pBarber3 != nullptr);
+	assert(pBarber3 == barber3);
 }

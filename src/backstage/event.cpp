@@ -1,8 +1,8 @@
 #include "event.hpp"
 
+using namespace std;
 namespace simulation
 {
-using namespace std;
 
 
 }	//simulation

@@ -28,6 +28,10 @@ static void cust_barb_chr_test()
 	test_barber_ini();
 	test_barber_accessor();
 	test_barber_modifier();
+	//BarberManager
+	test_barber_manager_ini();
+	test_barber_manager_get_free_barber();
+	test_barber_set_free();
 	//Chair
 	test_chair_ini();
 	test_chair_accessor();
@@ -41,6 +45,7 @@ static void object_manager_test()
 	test_om_get();
 	test_om_remove();
 	test_om_complex();
+	test_om_iterator();
 }
 
 static void factory_test()

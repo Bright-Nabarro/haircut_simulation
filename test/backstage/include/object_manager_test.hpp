@@ -193,6 +193,71 @@ void test_om_remove()
 }
 
 TPF
+void test_om_iterator()
+{
+	struct A {};
+    using namespace simulation;
+
+    // 初始化单个ObjectManager，包含Customer, Barber, Chair和A类型
+    ObjectManager<Customer, Barber, Chair, A> manager;
+
+    // 创建Customer, Barber, Chair和A对象
+    auto customer1 = std::make_shared<Customer>(Level::INT, 1.5, 30);
+    auto customer2 = std::make_shared<Customer>(Level::ADV, 2.0, 45);
+
+    auto barber1 = std::make_shared<Barber>(Level::INT, 1.5);
+    auto barber2 = std::make_shared<Barber>(Level::ADV, 2.0);
+
+    auto chair1 = std::make_shared<Chair>(customer1->get_shared(), barber1->get_shared());
+    auto chair2 = std::make_shared<Chair>(customer2->get_shared(), barber2->get_shared());
+
+    // 获取Id
+    const auto& customer1Id = customer1->get_id();
+    const auto& customer2Id = customer2->get_id();
+    const auto& barber1Id = barber1->get_id();
+    const auto& barber2Id = barber2->get_id();
+    const auto& chair1Id = chair1->get_id();
+    const auto& chair2Id = chair2->get_id();
+
+    // 注册对象到ObjectManager中
+    manager.register_obj(customer1Id, customer1);
+    manager.register_obj(customer2Id, customer2);
+    manager.register_obj(barber1Id, barber1);
+    manager.register_obj(barber2Id, barber2);
+    manager.register_obj(chair1Id, chair1);
+    manager.register_obj(chair2Id, chair2);
+
+    // 检查对象是否已注册到ObjectManager中
+    assert(manager.contains(customer1Id));
+    assert(manager.contains(customer2Id));
+    assert(manager.contains(barber1Id));
+    assert(manager.contains(barber2Id));
+    assert(manager.contains(chair1Id));
+    assert(manager.contains(chair2Id));
+
+    // 遍历Customer对象
+    size_t customer_count = 0;
+    for (auto it = manager.cbegin<Customer>(); it != manager.cend<Customer>(); ++it) {
+        ++customer_count;
+    }
+    assert(customer_count == 2);
+
+    // 遍历Barber对象
+    size_t barber_count = 0;
+    for (auto it = manager.cbegin<Barber>(); it != manager.cend<Barber>(); ++it) {
+        ++barber_count;
+    }
+    assert(barber_count == 2);
+
+    // 遍历Chair对象
+    size_t chair_count = 0;
+    for (auto it = manager.cbegin<Chair>(); it != manager.cend<Chair>(); ++it) {
+        ++chair_count;
+    }
+    assert(chair_count == 2);
+}
+
+TPF
 void test_om_complex()
 {
 	using namespace simulation;

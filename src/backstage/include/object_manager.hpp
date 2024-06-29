@@ -7,6 +7,10 @@
 namespace simulation
 {
 
+
+/*
+ * 近似于单例, 所有定义的同类型的对象都共享相同的成员
+ */
 template<typename... Args>
 class ObjectManager
 {
@@ -62,6 +66,18 @@ public:
 			}; 
 		}
 		return itr->second;
+	}
+
+	template<typename Obj>
+	auto cbegin() const
+	{
+		return get_map<Obj>().cbegin();
+	}
+
+	template<typename Obj>
+	auto cend() const
+	{
+		return get_map<Obj>().cend();
 	}
 	
 private:

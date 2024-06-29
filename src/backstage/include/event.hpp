@@ -1,18 +1,24 @@
 #pragma once
 #include "base_utility.hpp"
+#include "object_manager.hpp"
+#include "customer.hpp"
+#include "barber.hpp"
+#include "chair.hpp"
 
 namespace simulation
 {
 
 class Event
 {
+using SimulationManager = ObjectManager<Customer, Barber, Chair>;
+
 public:
-	Event(const Tick& tick): m_tick { tick }
-	{ }
+	Event(const Tick& tick, SimulationManager& manager);
 	virtual ~Event() = default;
 	virtual void execve() const = 0;
-private:
+protected:
 	Tick m_tick;
+	SimulationManager& m_manager;
 };
 
 
@@ -21,6 +27,7 @@ class CustomerArrivalEvent: public Event
 public:
 	void execve() const override;
 private:
+	std::shared_ptr<Id<Customer>> pCustomerId;
 };
 
 

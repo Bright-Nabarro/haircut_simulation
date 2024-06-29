@@ -1,4 +1,6 @@
 #pragma once
+#include <unordered_map>
+#include <unordered_set>
 #include "base_utility.hpp"
 #include "customer.hpp"
 
@@ -42,5 +44,36 @@ private:
 	std::shared_ptr<Id<Customer>> m_pCustomerId;
 	double m_totalWorktime;
 };
+
+
+/*
+ * 应在注册完所有的理发师之后进行构造
+ * 作为一个能够快速访问空闲理发师的类
+ * 不包含Level为FAST的理发师，FAST匹配由上层完成
+ * 如果添加枚举成员，需要修改construct_map_set
+ */
+template<typename Manager>
+class BarberManager
+{
+public:
+	BarberManager(Manager& manager);
+	virtual ~BarberManager() = default;
+	//注意：此方法会修改状态
+	std::shared_ptr<Barber> get_free_barber(Level level);
+	void free_barber(const Id<Barber>& barberId);
+private:
+	decltype(auto) construct_map_set();
+	Manager& m_manager;
+	std::unordered_map<Level, std::unordered_set<std::reference_wrapper<const Id<Barber>>>> m_freeLevelTable;
+	std::unordered_map<Level, std::unordered_set<std::reference_wrapper<const Id<Barber>>>> m_busyLevelTable;
+};
+
+#ifdef DEBUG
+
+struct A {};
+struct B {};
+struct C {};
+
+#endif
 
 }		//simulation
