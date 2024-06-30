@@ -7,16 +7,15 @@ namespace simulation
 
 /*
  *	Event,
- *	Event不会将自身压入EventManager, 由子类压入
  */
 Event::Event(SimulationManager& objManager, EventManager<Event>& m_eventManager, const Tick& tick) :
 	m_objManager 	{ objManager },
 	m_eventManager 	{ m_eventManager },
+	m_customerQue 	{ m_objManager },
 	m_barberManager { m_objManager },
 	m_chairManager 	{ m_objManager },
 	m_tick 			{ tick }
-{
-}
+{ }
 
 
 /*
@@ -27,27 +26,21 @@ CustomerArrivalEvent::CustomerArrivalEvent(SimulationManager& objManager,
 			EventManager<Event>& eventManager, const Tick& tick, const Id<Customer> customerId) :
 	Event { objManager, eventManager, tick },
 	pCustomer { objManager.get_obj<Customer>(customerId) }
-{
-	m_eventManager.push(*this);
-}
+{ }
 
 void CustomerArrivalEvent::execve()
 {
-	
-	
+	m_customerQue.push(pCustomer->get_id());
+	Tick maxWaitTime { max_wait_time() };
+	Tick startHaircutTime { start_haircut_time() };
+	if ( startHaircutTime < maxWaitTime ) 	//生成开始理发事件
+	{
+	}
+	else 	//生成离队事件
+	{
+	}
 }
 
-void CustomerArrivalEvent::handle_barber()
-{
-	Level level { pCustomer->get_level() };
-	if (level == Level::FAST)
-	{
-		
-	}
-	else
-	{
-	}
-}
 
 /*
  * StartHaircutEvent 

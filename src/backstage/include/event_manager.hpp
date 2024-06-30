@@ -2,6 +2,7 @@
 #include <list>
 #include <queue>
 #include <stdexcept>
+#include <memory>
 
 namespace simulation
 {
@@ -14,7 +15,7 @@ namespace simulation
 template<typename EventType> 
 class EventManager
 {
-	using Itr = typename std::list<std::reference_wrapper<EventType>>::iterator;
+	using Itr = typename std::list<std::unique_ptr<EventType>>::iterator;
 public:
 	EventManager(): m_queue{}, m_events{}
 	{ }
@@ -25,15 +26,19 @@ public:
 
 		Itr itr { m_queue.top() };
 		m_queue.pop();
-		itr->get().execve();
+		(*itr)->execve();
 		//c++标准保证list的其余迭代器在删除之后仍然有效
 		m_events.erase(itr);
 	}
 
-	void push(EventType& event)
+	template<typename EventTypeChild, typename... Args>
+	void emplace(Args... args)
 	{
 		assert(m_queue.size() == m_events.size());
-		m_events.push_front(std::ref(event));
+		static_assert(std::is_base_of<EventType, EventTypeChild>::value,
+				"EventTypeChild must be derived from EventType");
+		auto ptr { std::make_unique<EventTypeChild>(std::forward<Args>(args)...) };
+		m_events.push_front(std::move(ptr));
 		m_queue.push(m_events.begin());
 	}
 
@@ -50,12 +55,12 @@ private:
 		bool operator()(const Itr& lhs, const Itr& rhs) const
 		{
 			//标准库为最大堆，需要反向比较
-			return rhs->get().tick() < lhs->get().tick();
+			return rhs->get()->tick() < lhs->get()->tick();
 		}
 	};
 private:
 	std::priority_queue<Itr, std::vector<Itr>, EventCompare> m_queue;
-	std::list<std::reference_wrapper<EventType>> m_events;
+	std::list<std::unique_ptr<EventType>> m_events;
 };
 
 }	//namespace simulation

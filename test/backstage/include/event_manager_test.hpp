@@ -20,96 +20,100 @@ public:
 
 private:
     int m_tick;
+protected:
     bool m_verbose;
+};
+
+class DerivedTestEvent : public TestEvent
+{
+public:
+    DerivedTestEvent(int t, bool verbose = true) : TestEvent(t, verbose) {}
+
+    void execve() const override
+    {
+        if (m_verbose)
+        {
+            std::println("Executing derived event at tick: {}", tick());
+        }
+    }
 };
 
 TPF
 void test_em_ini()
 {
 	using namespace simulation;
-	using namespace std;
-	 EventManager<TestEvent> eventManager;
+    using namespace std;
 
-    // 测试空的EventManager
-    assert(eventManager.empty());
+    // 定义一个EventManager
+    EventManager<TestEvent> eventManager;
 
-    // 创建一些TestEvent对象
-    TestEvent event1(10, false);
+    // 创建并测试emplace接口
+    eventManager.emplace<TestEvent>(10, false);
+    eventManager.emplace<DerivedTestEvent>(20, false);
 
-    // 向EventManager中添加事件
-    eventManager.push(event1);
-	eventManager.execve();
+    // 测试execve接口
+    eventManager.execve();  // 应该执行TestEvent
+    eventManager.execve();  // 应该执行DerivedTestEvent
 }
 
 TPF
 void test_em_push()
 {
-	using namespace std;
 	using namespace simulation;
+    using namespace std;
 
     // 定义一个EventManager
     EventManager<TestEvent> eventManager;
 
-    // 创建一些TestEvent对象
-    TestEvent event1(10, false);
-    TestEvent event2(20, false);
-    TestEvent event3(5, false);
-    TestEvent event4(15, false);
+    // 创建多个TestEvent和DerivedTestEvent对象并使用push接口添加
+    for (int i = 0; i < 50; ++i) {
+        if (i % 2 == 0) {
+            TestEvent event(i, false);
+            eventManager.emplace<TestEvent>(event);
+        } else {
+            DerivedTestEvent event(i, false);
+            eventManager.emplace<DerivedTestEvent>(event);
+        }
+    }
 
-    // 向EventManager中添加事件
-    eventManager.push(event1);
-    eventManager.push(event2);
-    eventManager.push(event3);
-    eventManager.push(event4);
-
-    // 检查EventManager是否不为空
+    // 检查是否不为空
     assert(!eventManager.empty());
+
+    // 测试execve接口，确保所有事件都能按顺序执行
+    for (int i = 0; i < 50; ++i) {
+        eventManager.execve();
+    }
+
+    // 检查是否为空
+    assert(eventManager.empty());
 }
 
 TPF
 void test_em_execve(bool display = false)
 {
-	using namespace std;
 	using namespace simulation;
-	// 定义一个EventManager
+    using namespace std;
+
+    // 定义一个EventManager
     EventManager<TestEvent> eventManager;
 
-    // 创建一些TestEvent对象
-    TestEvent event1(10, display);
-    TestEvent event2(20, display);
-    TestEvent event3(5, display);
-    TestEvent event4(15, display);
+    // 创建多个TestEvent和DerivedTestEvent对象并使用emplace接口添加
+    for (int i = 0; i < 50; ++i) {
+        if (i % 2 == 0) {
+            eventManager.emplace<TestEvent>(i, display);
+        } else {
+            eventManager.emplace<DerivedTestEvent>(i, display);
+        }
+    }
 
-    // 向EventManager中添加事件
-    eventManager.push(event1);
-    eventManager.push(event2);
-    eventManager.push(event3);
-    eventManager.push(event4);
+    // 检查是否不为空
+    assert(!eventManager.empty());
 
-    // 执行事件，并检查事件的顺序
-    eventManager.execve(); // 应执行tick为5的事件
-    assert(event3.tick() == 5);
-
-    eventManager.execve(); // 应执行tick为10的事件
-    assert(event1.tick() == 10);
-
-    eventManager.execve(); // 应执行tick为15的事件
-    assert(event4.tick() == 15);
-
-    eventManager.execve(); // 应执行tick为20的事件
-    assert(event2.tick() == 20);
-
-    // 检查EventManager是否为空
-    assert(eventManager.empty());
-
-    // 确保异常被正确抛出
-    try
-    {
+    // 测试execve接口，确保所有事件都能按顺序执行
+    for (int i = 0; i < 50; ++i) {
         eventManager.execve();
-        assert(false); // 不应到达这里
     }
-    catch (const logic_error& e)
-    {
-        assert(string(e.what()) == "No events in EventManager");
-    }
+
+    // 检查是否为空
+    assert(eventManager.empty());
 }

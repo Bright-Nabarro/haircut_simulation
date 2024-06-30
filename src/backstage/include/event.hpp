@@ -21,10 +21,11 @@ protected:
 	virtual void execve() = 0;
 	SimulationManager& m_objManager;
 	EventManager<Event>& m_eventManager;
+	CustomerWaitingQue<SimulationManager> m_customerQue;
 	BarberManager<SimulationManager> m_barberManager;
 	ChairManager<SimulationManager> m_chairManager;
-private:
 	Tick tick();
+private:
 	Tick m_tick;
 };
 
@@ -36,7 +37,8 @@ public:
 			EventManager<Event>& eventManager, const Tick& tick, const Id<Customer> customerId);
 private:
 	void execve() override;
-	void handle_barber();
+	Tick max_wait_time();
+	Tick start_haircut_time();
 	std::shared_ptr<Customer> pCustomer;
 };
 
@@ -44,9 +46,11 @@ private:
 class StartHaircutEvent: public Event
 {
 public:
-	StartHaircutEvent(const Tick& tick, SimulationManager& objManager);
+	StartHaircutEvent(SimulationManager& objManager,
+			EventManager<Event>& eventManager, const Tick& tick, const Id<Customer> customerId);
 private:
 	void execve() override;
+
 };
 
 
