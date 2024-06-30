@@ -1,5 +1,6 @@
 set(TARGET backstage)
 include_directories(${CMAKE_SOURCE_DIR}/src/backstage/include)
+include_directories(${CMAKE_SOURCE_DIR}/extern/include)
 include_directories(./include)
 aux_source_directory(. SRC)
 

@@ -1,4 +1,5 @@
 #pragma once
+#include <unordered_set>
 #include "customer.hpp"
 #include "barber.hpp"
 #include "base_utility.hpp"
@@ -39,5 +40,28 @@ private:
 	std::shared_ptr<Id<Chair>> m_pId;
 	std::pair<std::shared_ptr<Id<Customer>>, std::shared_ptr<Id<Barber>>> m_pIdPair;
 };
+
+template<typename Manager>
+class ChairManager
+{
+public:
+	ChairManager(const Manager& manager);
+	virtual ~ChairManager() = default;
+	std::shared_ptr<Chair> get_free_chair();
+	void free_chair(const Id<Chair>& chairId);
+private:
+	const Manager& m_manager;
+	std::unordered_set<std::reference_wrapper<const Id<Chair>>> m_freeChairs;
+	std::unordered_set<std::reference_wrapper<const Id<Chair>>> m_busyChairs;
+};
+
+#ifdef DEBUG	//用于单元测试
+
+struct ChairTestA {};
+struct ChairTestB {};
+struct ChairTestC {};
+
+#endif
+
 
 }	//namespace simulation

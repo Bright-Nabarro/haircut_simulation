@@ -85,7 +85,7 @@ void Barber::release_customer()
 }
 
 template<typename Manager>
-BarberManager<Manager>::BarberManager(Manager& manager):
+BarberManager<Manager>::BarberManager(const Manager& manager):
 	m_manager { manager },
 	m_freeLevelTable { construct_map_set() },
 	m_busyLevelTable { construct_map_set() }

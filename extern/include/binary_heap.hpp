@@ -78,9 +78,9 @@ public:
 	}
 
 	template<typename... Arg>
-	void emplace(Arg... arg)
+	void emplace(Arg&&... arg)
 	{
-		push(Ty { arg... } );
+		push(Ty { std::forward<Arg>(arg)... } );
 	}
 
 	void pop()

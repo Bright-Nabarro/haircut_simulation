@@ -323,3 +323,285 @@ void test_barber_set_free()
 	assert(pBarber3 != nullptr);
 	assert(pBarber3 == barber3);
 }
+
+TPF
+void test_chair_manager_ini()
+{
+	using namespace simulation;
+
+    // 使用ObjectManager进行实例化
+    using M1 = ObjectManager<Customer, Barber, Chair, ChairTestA>;
+    ChairManager<M1> chairManager(M1{});
+
+    // 初始化ObjectManager
+    M1 manager;
+
+    // 创建Chair对象
+    auto chair1 = std::make_shared<Chair>();
+    auto chair2 = std::make_shared<Chair>();
+
+    // 获取Id
+    [[maybe_unused]] const auto& c1 = chair1->get_id();
+    [[maybe_unused]] const auto& c2 = chair2->get_id();
+}
+
+TPF
+void test_chair_manager_get_free()
+{
+	using namespace simulation;
+
+    // 使用ObjectManager进行实例化
+    using M2 = ObjectManager<Customer, Barber, Chair, ChairTestB>;
+    M2 manager;
+
+    // 创建Customer和Barber对象
+    auto customer1 = std::make_shared<Customer>(Level::INT, 1.5, 30);
+    auto customer2 = std::make_shared<Customer>(Level::ADV, 2.0, 45);
+    auto barber1 = std::make_shared<Barber>(Level::INT, 1.5);
+    auto barber2 = std::make_shared<Barber>(Level::ADV, 2.0);
+
+    // 获取Id
+    const auto& customer1Id = customer1->get_id();
+    const auto& customer2Id = customer2->get_id();
+    const auto& barber1Id = barber1->get_id();
+    const auto& barber2Id = barber2->get_id();
+
+    // 注册Customer和Barber对象到ObjectManager中
+    manager.register_obj(customer1Id, customer1);
+    manager.register_obj(customer2Id, customer2);
+    manager.register_obj(barber1Id, barber1);
+    manager.register_obj(barber2Id, barber2);
+
+    // 创建Chair对象
+    auto chair1 = std::make_shared<Chair>(customer1->get_shared(), barber1->get_shared());
+    auto chair2 = std::make_shared<Chair>(customer2->get_shared(), barber2->get_shared());
+    auto chair3 = std::make_shared<Chair>();
+    auto chair4 = std::make_shared<Chair>();
+    auto chair5 = std::make_shared<Chair>(customer1->get_shared(), barber2->get_shared());
+    auto chair6 = std::make_shared<Chair>();
+    auto chair7 = std::make_shared<Chair>();
+    auto chair8 = std::make_shared<Chair>(customer2->get_shared(), barber1->get_shared());
+
+    // 获取Id
+    const auto& chair1Id = chair1->get_id();
+    const auto& chair2Id = chair2->get_id();
+    const auto& chair3Id = chair3->get_id();
+    const auto& chair4Id = chair4->get_id();
+    const auto& chair5Id = chair5->get_id();
+    const auto& chair6Id = chair6->get_id();
+    const auto& chair7Id = chair7->get_id();
+    const auto& chair8Id = chair8->get_id();
+
+    // 注册Chair对象到ObjectManager中
+    manager.register_obj(chair1Id, chair1);
+    manager.register_obj(chair2Id, chair2);
+    manager.register_obj(chair3Id, chair3);
+    manager.register_obj(chair4Id, chair4);
+    manager.register_obj(chair5Id, chair5);
+    manager.register_obj(chair6Id, chair6);
+    manager.register_obj(chair7Id, chair7);
+    manager.register_obj(chair8Id, chair8);
+
+    // 初始化ChairManager
+    ChairManager<M2> chairManager(manager);
+
+    // 获取空闲的Chair对象
+    auto freeChair1 = chairManager.get_free_chair();
+    assert(freeChair1 == chair3 || freeChair1 == chair4 || freeChair1 == chair6 || freeChair1 == chair7);
+
+    auto freeChair2 = chairManager.get_free_chair();
+    assert(freeChair2 == chair3 || freeChair2 == chair4 || freeChair2 == chair6 || freeChair2 == chair7);
+    assert(freeChair2 != freeChair1);
+
+    auto freeChair3 = chairManager.get_free_chair();
+    assert(freeChair3 == chair3 || freeChair3 == chair4 || freeChair3 == chair6 || freeChair3 == chair7);
+    assert(freeChair3 != freeChair1);
+    assert(freeChair3 != freeChair2);
+
+    auto freeChair4 = chairManager.get_free_chair();
+    assert(freeChair4 == chair3 || freeChair4 == chair4 || freeChair4 == chair6 || freeChair4 == chair7);
+    assert(freeChair4 != freeChair1);
+    assert(freeChair4 != freeChair2);
+    assert(freeChair4 != freeChair3);
+
+    // 确保没有空闲的Chair对象
+    auto freeChair5 = chairManager.get_free_chair();
+    assert(freeChair5 == nullptr);
+}
+
+TPF
+void test_chair_manager_set_free()
+{
+    using namespace simulation;
+
+    // 使用ObjectManager进行实例化
+    using M3 = ObjectManager<Customer, Barber, Chair, ChairTestC>;
+    M3 manager;
+
+    // 创建Customer和Barber对象
+    auto customer1 = std::make_shared<Customer>(Level::INT, 1.5, 30);
+    auto customer2 = std::make_shared<Customer>(Level::ADV, 2.0, 45);
+    auto barber1 = std::make_shared<Barber>(Level::INT, 1.5);
+    auto barber2 = std::make_shared<Barber>(Level::ADV, 2.0);
+
+    // 获取Id
+    const auto& customer1Id = customer1->get_id();
+    const auto& customer2Id = customer2->get_id();
+    const auto& barber1Id = barber1->get_id();
+    const auto& barber2Id = barber2->get_id();
+
+    // 注册Customer和Barber对象到ObjectManager中
+    manager.register_obj(customer1Id, customer1);
+    manager.register_obj(customer2Id, customer2);
+    manager.register_obj(barber1Id, barber1);
+    manager.register_obj(barber2Id, barber2);
+
+    // 创建Chair对象
+    auto chair1 = std::make_shared<Chair>(customer1->get_shared(), barber1->get_shared());
+    auto chair2 = std::make_shared<Chair>(customer2->get_shared(), barber2->get_shared());
+    auto chair3 = std::make_shared<Chair>();
+    auto chair4 = std::make_shared<Chair>();
+    auto chair5 = std::make_shared<Chair>(customer1->get_shared(), barber2->get_shared());
+    auto chair6 = std::make_shared<Chair>();
+    auto chair7 = std::make_shared<Chair>();
+    auto chair8 = std::make_shared<Chair>(customer2->get_shared(), barber1->get_shared());
+	//1, 2, 5, 8为busy
+	
+    // 获取Id
+    const auto& chair1Id = chair1->get_id();
+    const auto& chair2Id = chair2->get_id();
+    const auto& chair3Id = chair3->get_id();
+    const auto& chair4Id = chair4->get_id();
+    const auto& chair5Id = chair5->get_id();
+    const auto& chair6Id = chair6->get_id();
+    const auto& chair7Id = chair7->get_id();
+    const auto& chair8Id = chair8->get_id();
+
+    // 注册Chair对象到ObjectManager中
+    manager.register_obj(chair1Id, chair1);
+    manager.register_obj(chair2Id, chair2);
+    manager.register_obj(chair3Id, chair3);
+    manager.register_obj(chair4Id, chair4);
+    manager.register_obj(chair5Id, chair5);
+    manager.register_obj(chair6Id, chair6);
+    manager.register_obj(chair7Id, chair7);
+    manager.register_obj(chair8Id, chair8);
+
+    // 初始化ChairManager
+    ChairManager<M3> chairManager(manager);
+
+    // 将一些Chair对象添加到空闲集合中
+    chairManager.free_chair(chair1Id);
+    chairManager.free_chair(chair2Id);
+    chairManager.free_chair(chair5Id);
+    chairManager.free_chair(chair8Id);
+
+
+    // 检查是否成功标记为空闲
+   
+	auto freeChair1 = chairManager.get_free_chair();
+	assert(
+	    freeChair1 == chair1 ||
+	    freeChair1 == chair2 ||
+	    freeChair1 == chair3 ||
+	    freeChair1 == chair4 ||
+	    freeChair1 == chair5 ||
+	    freeChair1 == chair6 ||
+	    freeChair1 == chair7 ||
+	    freeChair1 == chair8
+	);
+	
+	auto freeChair2 = chairManager.get_free_chair();
+	assert(
+	    freeChair2 == chair1 ||
+	    freeChair2 == chair2 ||
+	    freeChair2 == chair3 ||
+	    freeChair2 == chair4 ||
+	    freeChair2 == chair5 ||
+	    freeChair2 == chair6 ||
+	    freeChair2 == chair7 ||
+	    freeChair2 == chair8
+	);
+	assert(freeChair2 != freeChair1);
+	
+	auto freeChair3 = chairManager.get_free_chair();
+	assert(
+	    freeChair3 == chair1 ||
+	    freeChair3 == chair2 ||
+	    freeChair3 == chair3 ||
+	    freeChair3 == chair4 ||
+	    freeChair3 == chair5 ||
+	    freeChair3 == chair6 ||
+	    freeChair3 == chair7 ||
+	    freeChair3 == chair8
+	);
+	assert(freeChair3 != freeChair1 && freeChair3 != freeChair2);
+	
+	auto freeChair4 = chairManager.get_free_chair();
+	assert(
+	    freeChair4 == chair1 ||
+	    freeChair4 == chair2 ||
+	    freeChair4 == chair3 ||
+	    freeChair4 == chair4 ||
+	    freeChair4 == chair5 ||
+	    freeChair4 == chair6 ||
+	    freeChair4 == chair7 ||
+	    freeChair4 == chair8
+	);
+	assert(freeChair4 != freeChair1 && freeChair4 != freeChair2 && freeChair4 != freeChair3);
+	
+	auto freeChair5 = chairManager.get_free_chair();
+	assert(
+	    freeChair5 == chair1 ||
+	    freeChair5 == chair2 ||
+	    freeChair5 == chair3 ||
+	    freeChair5 == chair4 ||
+	    freeChair5 == chair5 ||
+	    freeChair5 == chair6 ||
+	    freeChair5 == chair7 ||
+	    freeChair5 == chair8
+	);
+	assert(freeChair5 != freeChair1 && freeChair5 != freeChair2 && freeChair5 != freeChair3 && freeChair5 != freeChair4);
+	
+	auto freeChair6 = chairManager.get_free_chair();
+	assert(
+	    freeChair6 == chair1 ||
+	    freeChair6 == chair2 ||
+	    freeChair6 == chair3 ||
+	    freeChair6 == chair4 ||
+	    freeChair6 == chair5 ||
+	    freeChair6 == chair6 ||
+	    freeChair6 == chair7 ||
+	    freeChair6 == chair8
+	);
+	assert(freeChair6 != freeChair1 && freeChair6 != freeChair2 && freeChair6 != freeChair3 && freeChair6 != freeChair4 && freeChair6 != freeChair5);
+	
+	auto freeChair7 = chairManager.get_free_chair();
+	assert(
+	    freeChair7 == chair1 ||
+	    freeChair7 == chair2 ||
+	    freeChair7 == chair3 ||
+	    freeChair7 == chair4 ||
+	    freeChair7 == chair5 ||
+	    freeChair7 == chair6 ||
+	    freeChair7 == chair7 ||
+	    freeChair7 == chair8
+	);
+	assert(freeChair7 != freeChair1 && freeChair7 != freeChair2 && freeChair7 != freeChair3 && freeChair7 != freeChair4 && freeChair7 != freeChair5 && freeChair7 != freeChair6);
+	
+	auto freeChair8 = chairManager.get_free_chair();
+	assert(
+	    freeChair8 == chair1 ||
+	    freeChair8 == chair2 ||
+	    freeChair8 == chair3 ||
+	    freeChair8 == chair4 ||
+	    freeChair8 == chair5 ||
+	    freeChair8 == chair6 ||
+	    freeChair8 == chair7 ||
+	    freeChair8 == chair8
+	);
+	assert(freeChair8 != freeChair1 && freeChair8 != freeChair2 && freeChair8 != freeChair3 && freeChair8 != freeChair4 && freeChair8 != freeChair5 && freeChair8 != freeChair6 && freeChair8 != freeChair7);
+
+	auto freeChair9 = chairManager.get_free_chair();
+	assert(freeChair9 == nullptr);
+}

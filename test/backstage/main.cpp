@@ -3,6 +3,7 @@
 #include "cust_barb_chr_test.hpp"
 #include "object_manager_test.hpp"
 #include "factory_test.hpp"
+#include "event_manager_test.hpp"
 
 static void base_utility_test()
 {
@@ -36,6 +37,10 @@ static void cust_barb_chr_test()
 	test_chair_ini();
 	test_chair_accessor();
 	test_chair_modifier();
+	//ChairManager
+	test_chair_manager_ini();
+	test_chair_manager_get_free();
+	test_chair_manager_set_free();
 }
 
 static void object_manager_test()
@@ -55,11 +60,19 @@ static void factory_test()
 	test_fac_complex();
 }
 
+static void event_manager_test()
+{
+	test_em_ini();
+	test_em_emplace();
+	test_em_execve(true);
+}
+
 int main()
 {
 	base_utility_test();
 	cust_barb_chr_test();
 	object_manager_test();
 	factory_test();
+	event_manager_test();
 	std::println("((>ω<))↗ok");
 }
