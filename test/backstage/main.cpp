@@ -25,6 +25,10 @@ static void cust_barb_chr_test()
 	test_customer_ini();
 	test_customer_accessor();
 	test_customer_modifier();
+	//CustomerWaitingQue
+	test_cwq_ini();
+	test_cwq_push();
+	test_cwq_pop();
 	//Barber
 	test_barber_ini();
 	test_barber_accessor();
@@ -63,8 +67,8 @@ static void factory_test()
 static void event_manager_test()
 {
 	test_em_ini();
-	test_em_emplace();
-	test_em_execve(true);
+	test_em_push();
+	test_em_execve();
 }
 
 int main()

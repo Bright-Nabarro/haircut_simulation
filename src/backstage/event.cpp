@@ -1,30 +1,57 @@
+#include <cassert>
 #include "event.hpp"
 
 using namespace std;
 namespace simulation
 {
+
+/*
+ *	Event,
+ *	Event不会将自身压入EventManager, 由子类压入
+ */
+Event::Event(SimulationManager& objManager, EventManager<Event>& m_eventManager, const Tick& tick) :
+	m_objManager 	{ objManager },
+	m_eventManager 	{ m_eventManager },
+	m_barberManager { m_objManager },
+	m_chairManager 	{ m_objManager },
+	m_tick 			{ tick }
+{
+}
+
+
 /*
  *	CustomerArrivalEvent
  */
 
-CustomerArrivalEvent::CustomerArrivalEvent(const Tick& tick, SimulationManager& manager,
-	const Id<Customer> customerId) :
-	Event { tick, manager },
-	pCustomer { manager.get_obj<Customer>(customerId) }
+CustomerArrivalEvent::CustomerArrivalEvent(SimulationManager& objManager,
+			EventManager<Event>& eventManager, const Tick& tick, const Id<Customer> customerId) :
+	Event { objManager, eventManager, tick },
+	pCustomer { objManager.get_obj<Customer>(customerId) }
 {
+	m_eventManager.push(*this);
 }
 
 void CustomerArrivalEvent::execve()
 {
+	
+	
+}
+
+void CustomerArrivalEvent::handle_barber()
+{
+	Level level { pCustomer->get_level() };
+	if (level == Level::FAST)
+	{
+		
+	}
+	else
+	{
+	}
 }
 
 /*
  * StartHaircutEvent 
  */
-StartHaircutEvent::StartHaircutEvent(const Tick& tick, SimulationManager& manager) :
-	Event { tick, manager }
-{
-}
 
 //注意此时理发师已经分配完毕
 //椅子也判断完成

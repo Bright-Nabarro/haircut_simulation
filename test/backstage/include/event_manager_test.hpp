@@ -28,32 +28,39 @@ void test_em_ini()
 {
 	using namespace simulation;
 	using namespace std;
-	EventManager<TestEvent> eventManager;
+	 EventManager<TestEvent> eventManager;
+
     // 测试空的EventManager
     assert(eventManager.empty());
+
+    // 创建一些TestEvent对象
+    TestEvent event1(10, false);
+
     // 向EventManager中添加事件
-    eventManager.emplace(10, false);
-	eventManager.empty();
+    eventManager.push(event1);
 	eventManager.execve();
 }
 
 TPF
-void test_em_emplace()
+void test_em_push()
 {
 	using namespace std;
 	using namespace simulation;
 
-    // 定义一个EventManager，使用std::priority_queue作为优先队列
+    // 定义一个EventManager
     EventManager<TestEvent> eventManager;
 
-    // 测试空的EventManager
-    assert(eventManager.empty());
+    // 创建一些TestEvent对象
+    TestEvent event1(10, false);
+    TestEvent event2(20, false);
+    TestEvent event3(5, false);
+    TestEvent event4(15, false);
 
     // 向EventManager中添加事件
-    eventManager.emplace(10, false);
-    eventManager.emplace(20, false);
-    eventManager.emplace(5, false);
-    eventManager.emplace(15, false);
+    eventManager.push(event1);
+    eventManager.push(event2);
+    eventManager.push(event3);
+    eventManager.push(event4);
 
     // 检查EventManager是否不为空
     assert(!eventManager.empty());
@@ -64,37 +71,45 @@ void test_em_execve(bool display = false)
 {
 	using namespace std;
 	using namespace simulation;
-
-    // 定义一个EventManager，使用std::priority_queue作为优先队列
+	// 定义一个EventManager
     EventManager<TestEvent> eventManager;
 
-    // 测试空的EventManager
-    assert(eventManager.empty());
+    // 创建一些TestEvent对象
+    TestEvent event1(10, display);
+    TestEvent event2(20, display);
+    TestEvent event3(5, display);
+    TestEvent event4(15, display);
 
     // 向EventManager中添加事件
-    eventManager.emplace(10, display);
-    eventManager.emplace(20, display);
-    eventManager.emplace(5, display);
-    eventManager.emplace(15, display);
+    eventManager.push(event1);
+    eventManager.push(event2);
+    eventManager.push(event3);
+    eventManager.push(event4);
 
-    // 检查EventManager是否不为空
-    assert(!eventManager.empty());
-	eventManager.execve();
-	eventManager.execve();
-	eventManager.execve();
-	eventManager.execve();
-	try
-	{
-		eventManager.execve();
-		assert(false);
-	}
-	catch(logic_error& e)
-	{
-		if (display)
-			println("{}", e.what());
-	}
-	catch(...)
-	{
-		assert(false);
-	}
+    // 执行事件，并检查事件的顺序
+    eventManager.execve(); // 应执行tick为5的事件
+    assert(event3.tick() == 5);
+
+    eventManager.execve(); // 应执行tick为10的事件
+    assert(event1.tick() == 10);
+
+    eventManager.execve(); // 应执行tick为15的事件
+    assert(event4.tick() == 15);
+
+    eventManager.execve(); // 应执行tick为20的事件
+    assert(event2.tick() == 20);
+
+    // 检查EventManager是否为空
+    assert(eventManager.empty());
+
+    // 确保异常被正确抛出
+    try
+    {
+        eventManager.execve();
+        assert(false); // 不应到达这里
+    }
+    catch (const logic_error& e)
+    {
+        assert(string(e.what()) == "No events in EventManager");
+    }
 }

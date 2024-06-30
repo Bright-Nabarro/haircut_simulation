@@ -605,3 +605,148 @@ void test_chair_manager_set_free()
 	auto freeChair9 = chairManager.get_free_chair();
 	assert(freeChair9 == nullptr);
 }
+
+TPF
+void test_cwq_ini()
+{
+	using namespace simulation;
+	using namespace std;
+	using M1 = ObjectManager<Customer, Barber, Chair, CustTestA>;
+    M1 manager;
+
+    // 初始化CustomerWaitingQue
+    CustomerWaitingQue<M1> customerWaitingQue(manager);
+
+    // 创建一个Customer对象
+    auto customer = make_shared<Customer>(Level::BEG, 1.0, 30);
+    const Id<Customer>& customerId = customer->get_id();
+	manager.register_obj(customerId, customer);
+
+    // 将Customer对象推入队列
+    customerWaitingQue.push(customerId);
+
+    // 从队列中弹出Customer对象
+    const Id<Customer>& _ = customerWaitingQue.pop(Level::BEG);
+}
+
+TPF
+void test_cwq_push()
+{
+	using namespace simulation;
+	using namespace std;
+
+    // 使用ObjectManager进行实例化
+    using M2 = ObjectManager<Customer, Barber, Chair, CustTestB>;
+    M2 manager;
+
+    // 创建Customer对象并注册到manager中
+    auto customer1 = std::make_shared<Customer>(Level::BEG, 1.0, 30);
+    auto customer2 = std::make_shared<Customer>(Level::INT, 1.5, 45);
+    auto customer3 = std::make_shared<Customer>(Level::ADV, 2.0, 60);
+    const Id<Customer>& customerId1 = customer1->get_id();
+    const Id<Customer>& customerId2 = customer2->get_id();
+    const Id<Customer>& customerId3 = customer3->get_id();
+    manager.register_obj(customerId1, customer1);
+    manager.register_obj(customerId2, customer2);
+    manager.register_obj(customerId3, customer3);
+
+    // 初始化CustomerWaitingQue
+    CustomerWaitingQue<M2> customerWaitingQue(manager);
+
+    // 将Customer对象推入队列
+    customerWaitingQue.push(customerId1);
+    customerWaitingQue.push(customerId2);
+    customerWaitingQue.push(customerId3);
+
+    // 检查队列大小是否更新
+    assert(customerWaitingQue.get_que_size(Level::BEG) == 1);
+    assert(customerWaitingQue.get_que_size(Level::INT) == 1);
+    assert(customerWaitingQue.get_que_size(Level::ADV) == 1);
+
+    // 从队列中弹出并检查顺序
+    const Id<Customer>& poppedCustomerId1 = customerWaitingQue.pop(Level::BEG);
+    const Id<Customer>& poppedCustomerId2 = customerWaitingQue.pop(Level::INT);
+    const Id<Customer>& poppedCustomerId3 = customerWaitingQue.pop(Level::ADV);
+    assert(&poppedCustomerId1 == &customerId1);
+    assert(&poppedCustomerId2 == &customerId2);
+    assert(&poppedCustomerId3 == &customerId3);
+
+    // 检查弹出后队列大小
+    assert(customerWaitingQue.get_que_size(Level::BEG) == 0);
+    assert(customerWaitingQue.get_que_size(Level::INT) == 0);
+    assert(customerWaitingQue.get_que_size(Level::ADV) == 0);
+}
+
+TPF
+void test_cwq_pop()
+{
+    using namespace simulation;
+
+    // 使用ObjectManager进行实例化
+    using M2 = ObjectManager<Customer, Barber, Chair, CustTestB>;
+    M2 manager;
+
+    // 创建多个Customer对象并注册到manager中
+    auto customer1 = std::make_shared<Customer>(Level::BEG, 1.0, 30);
+    auto customer2 = std::make_shared<Customer>(Level::INT, 1.5, 45);
+    auto customer3 = std::make_shared<Customer>(Level::ADV, 2.0, 60);
+    auto customer4 = std::make_shared<Customer>(Level::BEG, 1.1, 35);
+    auto customer5 = std::make_shared<Customer>(Level::INT, 1.6, 50);
+    auto customer6 = std::make_shared<Customer>(Level::ADV, 2.1, 65);
+    
+    const Id<Customer>& customerId1 = customer1->get_id();
+    const Id<Customer>& customerId2 = customer2->get_id();
+    const Id<Customer>& customerId3 = customer3->get_id();
+    const Id<Customer>& customerId4 = customer4->get_id();
+    const Id<Customer>& customerId5 = customer5->get_id();
+    const Id<Customer>& customerId6 = customer6->get_id();
+    
+    manager.register_obj(customerId1, customer1);
+    manager.register_obj(customerId2, customer2);
+    manager.register_obj(customerId3, customer3);
+    manager.register_obj(customerId4, customer4);
+    manager.register_obj(customerId5, customer5);
+    manager.register_obj(customerId6, customer6);
+
+    // 初始化CustomerWaitingQue
+    CustomerWaitingQue<M2> customerWaitingQue(manager);
+
+    // 将Customer对象推入队列
+    customerWaitingQue.push(customerId1);
+    customerWaitingQue.push(customerId2);
+    customerWaitingQue.push(customerId3);
+    customerWaitingQue.push(customerId4);
+    customerWaitingQue.push(customerId5);
+    customerWaitingQue.push(customerId6);
+
+    // 检查队列大小是否更新
+    assert(customerWaitingQue.get_que_size(Level::BEG) == 2);
+    assert(customerWaitingQue.get_que_size(Level::INT) == 2);
+    assert(customerWaitingQue.get_que_size(Level::ADV) == 2);
+
+    // 从队列中弹出并检查顺序
+    const Id<Customer>& poppedCustomerId1 = customerWaitingQue.pop(Level::BEG);
+    const Id<Customer>& poppedCustomerId2 = customerWaitingQue.pop(Level::INT);
+    const Id<Customer>& poppedCustomerId3 = customerWaitingQue.pop(Level::ADV);
+    assert(&poppedCustomerId1 == &customerId1);
+    assert(&poppedCustomerId2 == &customerId2);
+    assert(&poppedCustomerId3 == &customerId3);
+
+    // 检查弹出后队列大小
+    assert(customerWaitingQue.get_que_size(Level::BEG) == 1);
+    assert(customerWaitingQue.get_que_size(Level::INT) == 1);
+    assert(customerWaitingQue.get_que_size(Level::ADV) == 1);
+
+    // 继续从队列中弹出剩余的Customer对象
+    const Id<Customer>& poppedCustomerId4 = customerWaitingQue.pop(Level::BEG);
+    const Id<Customer>& poppedCustomerId5 = customerWaitingQue.pop(Level::INT);
+    const Id<Customer>& poppedCustomerId6 = customerWaitingQue.pop(Level::ADV);
+    assert(&poppedCustomerId4 == &customerId4);
+    assert(&poppedCustomerId5 == &customerId5);
+    assert(&poppedCustomerId6 == &customerId6);
+
+    // 检查所有队列是否为空
+    assert(customerWaitingQue.get_que_size(Level::BEG) == 0);
+    assert(customerWaitingQue.get_que_size(Level::INT) == 0);
+    assert(customerWaitingQue.get_que_size(Level::ADV) == 0);
+}

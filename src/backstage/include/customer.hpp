@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <deque>
 #include "base_utility.hpp"
 
 namespace simulation
@@ -38,5 +39,35 @@ private:
 	const size_t m_maxWaitingTime; //最长等待时间
 	bool m_haircutStarted;
 };
+
+template<typename Manager>
+class CustomerWaitingQue
+{
+public:
+	CustomerWaitingQue(const Manager& manager);
+	virtual ~CustomerWaitingQue() = default;
+	//以人数作为比较依据，level不包含FAST
+	size_t get_que_size(Level level) const;
+	//这里支持FAST
+	void push(const Id<Customer>& idCustomer);
+	const Id<Customer>& pop(Level level);
+	
+private:
+	void ini_map();
+	Level find_min_que() const;
+	auto& check_level(Level level);
+	const auto& check_level(Level level) const;
+	const Manager& m_manager;
+	std::unordered_map<Level,
+		std::deque<std::reference_wrapper<const Id<Customer>>>> m_waitingQues;
+};
+
+#ifdef DEBUG	//用于单元测试
+
+struct CustTestA {};
+struct CustTestB {};
+struct CustTestC {};
+
+#endif
 
 }	//namespace simulation

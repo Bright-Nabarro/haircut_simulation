@@ -4,20 +4,23 @@
 #include "customer.hpp"
 #include "barber.hpp"
 #include "chair.hpp"
+#include "event_manager.hpp"
 
 namespace simulation
 {
 
 class Event
 {
+	friend EventManager<Event>;
 protected:
 	using SimulationManager = ObjectManager<Customer, Barber, Chair>;
 public:
-	Event(const Tick& tick, SimulationManager& manager);
+	Event(SimulationManager& objManager, EventManager<Event>& eventManager, const Tick& tick);
 	virtual ~Event() = default;
 protected:
 	virtual void execve() = 0;
-	SimulationManager& m_manager;
+	SimulationManager& m_objManager;
+	EventManager<Event>& m_eventManager;
 	BarberManager<SimulationManager> m_barberManager;
 	ChairManager<SimulationManager> m_chairManager;
 private:
@@ -29,9 +32,11 @@ private:
 class CustomerArrivalEvent: public Event
 {
 public:
-	CustomerArrivalEvent(const Tick& tick, SimulationManager& manager, const Id<Customer> customerId);
-	void execve() override;
+	CustomerArrivalEvent(SimulationManager& objManager,
+			EventManager<Event>& eventManager, const Tick& tick, const Id<Customer> customerId);
 private:
+	void execve() override;
+	void handle_barber();
 	std::shared_ptr<Customer> pCustomer;
 };
 
@@ -39,9 +44,9 @@ private:
 class StartHaircutEvent: public Event
 {
 public:
-	StartHaircutEvent(const Tick& tick, SimulationManager& manager);
-	void execve() override;
+	StartHaircutEvent(const Tick& tick, SimulationManager& objManager);
 private:
+	void execve() override;
 };
 
 
@@ -56,8 +61,8 @@ private:
 class CompleteHaircutEvent: public Event
 {
 public:
-	void execve() override;
 private:
+	void execve() override;
 };
 
 }	//namespace simulation

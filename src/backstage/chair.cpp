@@ -120,7 +120,7 @@ void ChairManager<Manager>::free_chair(const Id<Chair>& chairId)
 
 //显示实例化
 using SimulationManager = ObjectManager<Customer, Barber, Chair>;
-template class BarberManager<SimulationManager>;
+template class ChairManager<SimulationManager>;
 
 //由于单例特性可能存在测试之间彼此污染的情况，添加多种实例化供单元测试使用
 #ifdef DEBUG
