@@ -4,3 +4,4 @@ build_run.sh
 .cache/
 bin/
 .gdb_history
+lib/
