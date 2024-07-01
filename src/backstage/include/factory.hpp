@@ -30,28 +30,28 @@ private:
 	Manager& m_objectManager;
 };
 
-using Manager = ObjectManager<Customer, Barber, Chair>;
+using UseObjManager = ObjectManager<Customer, Barber, Chair>;
 
-class CustomerFactory : ObjFactory<Customer, Manager>
+class CustomerFactory : ObjFactory<Customer, UseObjManager>
 {
 public:
-	using ObjFactory<Customer, Manager>::ObjFactory;
+	using ObjFactory<Customer, UseObjManager>::ObjFactory;
 	[[maybe_unused]]
 	std::shared_ptr<Customer> create_customer(Level level, double timeFactor, size_t maxWaitingTime);
 };
 
-class BarberFactory : ObjFactory<Barber, Manager>
+class BarberFactory : ObjFactory<Barber, UseObjManager>
 {
 public:
-	using ObjFactory<Barber, Manager>::ObjFactory;
+	using ObjFactory<Barber, UseObjManager>::ObjFactory;
 	[[maybe_unused]]
-	std::shared_ptr<Barber> create_barber(Level level, double timeFactor);
+	std::shared_ptr<Barber> create_barber(Level level, double timeFactor, double totalTime);
 };
 
-class ChairFactory : ObjFactory<Chair, Manager>
+class ChairFactory : ObjFactory<Chair, UseObjManager>
 {
 public:
-	using ObjFactory<Chair, Manager>::ObjFactory;
+	using ObjFactory<Chair, UseObjManager>::ObjFactory;
 	[[maybe_unused]]
 	std::shared_ptr<Chair> create_chair();
 };

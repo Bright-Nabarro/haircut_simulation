@@ -10,6 +10,7 @@
 #include "customer.hpp"
 #include "barber.hpp"
 #include "chair.hpp"
+#include "factory.hpp"
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -78,11 +79,9 @@ bool load_barber(TyManager& objManager)
 
 		if (levelNum == -1 || timeFactor == 0 || totalTime == -1)
 			continue;
-		auto pBarber { make_shared<Barber>(
-			static_cast<Level>(levelNum), timeFactor)};
-		pBarber->increase_worktime(totalTime);
 
-		objManager.template register_obj<Barber>(pBarber->get_id(), pBarber);
+		BarberFactory barberFactory { objManager };
+		barberFactory.create_barber(static_cast<Level>(levelNum), timeFactor, totalTime);
 		successCounter++;
 	}
 
@@ -130,10 +129,10 @@ bool load_chair(TyManager& objManager)
 	if ( size <= 0 )
 		return false;
 
+	ChairFactory chairFactory{ objManager };
 	for (long i {0}; i < size; i++)
 	{
-		auto pChair { make_shared<Chair>() };
-		objManager.template register_obj<Chair>(pChair->get_id(), pChair);
+		chairFactory.create_chair();
 	}
 	return true;
 }
@@ -146,26 +145,27 @@ template bool save_chair<MainObjManager>(const MainObjManager&);
 template bool load_chair<MainObjManager>(MainObjManager&);
 
 
-#ifdef DEBUG
-using M1 = ObjectManager<Customer, Barber, Chair, IoBarA>;
-using M2 = ObjectManager<Customer, Barber, Chair, IoBarB>;
-using M3 = ObjectManager<Customer, Barber, Chair, IoChrA>;
-using M4 = ObjectManager<Customer, Barber, Chair, IoChrB>;
-
-template bool save_barber<M1>(const M1&);
-template bool load_barber<M1>(M1&);
-
-// 显式实例化模板函数 for M2
-template bool save_barber<M2>(const M2&);
-template bool load_barber<M2>(M2&);
-
-// 显式实例化模板函数 for M3
-template bool save_chair<M3>(const M3&);
-template bool load_chair<M3>(M3&);
-
-// 显式实例化模板函数 for M4
-template bool save_chair<M4>(const M4&);
-template bool load_chair<M4>(M4&);
-#endif
+//工厂已经全特化ObjManager为具体类型，不适用其他类型
+//#ifdef DEBUG
+//using M1 = ObjectManager<Customer, Barber, Chair, IoBarA>;
+//using M2 = ObjectManager<Customer, Barber, Chair, IoBarB>;
+//using M3 = ObjectManager<Customer, Barber, Chair, IoChrA>;
+//using M4 = ObjectManager<Customer, Barber, Chair, IoChrB>;
+//
+//template bool save_barber<M1>(const M1&);
+//template bool load_barber<M1>(M1&);
+//
+//// 显式实例化模板函数 for M2
+//template bool save_barber<M2>(const M2&);
+//template bool load_barber<M2>(M2&);
+//
+//// 显式实例化模板函数 for M3
+//template bool save_chair<M3>(const M3&);
+//template bool load_chair<M3>(M3&);
+//
+//// 显式实例化模板函数 for M4
+//template bool save_chair<M4>(const M4&);
+//template bool load_chair<M4>(M4&);
+//#endif
 
 }	//namespace simulation

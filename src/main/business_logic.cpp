@@ -40,7 +40,7 @@ int main_loop(MainObjManager& objManager, MainEventManager& eventManager)
 {
 	while(!eventManager.empty())
 	{
-		printManager(objManager);
+		//printManager(objManager);
 		eventManager.execve();
 	}
 	return 0;

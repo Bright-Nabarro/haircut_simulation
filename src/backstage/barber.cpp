@@ -9,12 +9,12 @@ using namespace std;
 namespace simulation
 {
 
-Barber::Barber(Level level, double timeFactor) :
+Barber::Barber(Level level, double timeFactor, double totalWorktime) :
 	m_pId { make_shared<Id<Barber>>() },
  	m_level { level },
 	m_timeFactor { timeFactor },
 	m_pCustomerId { nullptr }, 
-	m_totalWorktime {0}
+	m_totalWorktime { totalWorktime }
 {
 	if (m_level == Level::FAST)
 		throw invalid_argument { "Barber's Level cannot be FAST" };

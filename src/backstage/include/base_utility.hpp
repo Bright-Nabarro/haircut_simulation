@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <unordered_map>
 #include <functional>
+#include <string>
 
 namespace simulation
 {
@@ -37,6 +38,8 @@ public:
 
 	void increament(size_t s)
 	{ increament(0, 0, s); }
+
+	std::string to_string() const;
 
 private:
 	const Hms& tick2hms() const;

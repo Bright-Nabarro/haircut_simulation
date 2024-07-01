@@ -37,6 +37,11 @@ void Tick::increament(size_t h, size_t m, size_t s)
 	size_t hour = thisHms.hour + h;
 	size_t min = thisHms.min + m;
 	size_t sec = thisHms.sec + s;
+	if (hour > 24)
+	{
+		throw logic_error { "Hour increament over 24" };
+	}
+
 	if ( sec >= 60 )
 	{
 		min++;
@@ -56,6 +61,12 @@ void Tick::increament(size_t h, size_t m, size_t s)
 
 	m_timestamp = hms2tick(hms);
 	s_tick2hmsTable[m_timestamp] = hms;
+}
+
+std::string Tick::to_string() const
+{
+	Hms hms { tick2hms() };
+	return std::format("{:02}:{:02}:{:02}", hms.hour, hms.min, hms.sec);
 }
 
 Tick::Tick(const Hms& hms) :

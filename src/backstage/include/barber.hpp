@@ -10,7 +10,7 @@ namespace simulation
 class Barber
 {
 public:
-	Barber(Level level, double timeFactor);
+	Barber(Level level, double timeFactor, double totalWorktime = 0);
 	//这里不提供等级是否匹配的检查，需要在上层手动检查
 	Barber(Level level, double timeFactor, std::shared_ptr<Id<Customer>> pCustomerId);
 	virtual ~Barber() = default;

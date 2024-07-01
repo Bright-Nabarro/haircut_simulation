@@ -60,14 +60,25 @@ CustomerArrivalEvent::CustomerArrivalEvent(
 
 void CustomerArrivalEvent::execve()
 {
-	m_output(std::format("CustomerArrival Cust[{}]", m_pCustomer->get_id().get_id_number()));
+	m_output(std::format("[{}] CustomerArrival Cust[{}]", tick().to_string(), m_pCustomer->get_id().get_id_number()));
 
 	auto factorList { m_customerQue.push(m_pCustomer->get_id()) };
 	Tick maxWaitTime { max_wait_time() };
 	Tick startHaircutTime { start_haircut_time(factorList) };
-	if ( startHaircutTime < maxWaitTime ) 	//生成开始理发事件
+	if ( startHaircutTime < maxWaitTime &&
+		 m_customerQue.get_que_size(m_pCustomer->get_level()) == 0) 	//如果相应的顾客队列为空,生成开始理发事件
 	{
-
+		m_eventManager.emplace<StartHaircutEvent>(
+			m_objManager,
+			m_eventManager,
+			m_customerQue,
+			m_barberManager,
+			m_chairManager,
+			startHaircutTime,
+			base_time(),
+			m_output,
+			m_pCustomer->get_level()
+		);
 	}
 	else 	//生成离队事件, 方便起见，顾客不入队
 	{
@@ -166,7 +177,8 @@ void StartHaircutEvent::execve()
 			pChair->get_id()
 	);
 
-	m_output(std::format("StartHaircut Cust[{}] Bar[{}] Chr[{}]",
+	m_output(std::format("[{}] StartHaircut Cust[{}] Bar[{}] Chr[{}]",
+				tick().to_string(),
 				customerId.get_id_number(), pBarber->get_id().get_id_number(),
 				pChair->get_id().get_id_number()));
 }
@@ -190,7 +202,9 @@ CustomerLeaveEvent::CustomerLeaveEvent(SimulationManager& objManager,
 
 void CustomerLeaveEvent::execve()
 {
-	m_output(std::format("CustomerLeave Cust[{}]", m_pCustomer->get_id().get_id_number()));
+	m_output(std::format("[{}] CustomerLeave Cust[{}]",
+				tick().to_string(),
+				m_pCustomer->get_id().get_id_number()));
 }
 
 /*
@@ -216,7 +230,8 @@ CompleteHaircutEvent::CompleteHaircutEvent(SimulationManager& objManager,
 
 void CompleteHaircutEvent::execve()
 {
-	m_output(std::format("CompleteHaircut Cust[{}], Bar[{}], Chr[{}]",
+	m_output(std::format("[{}] CompleteHaircut Cust[{}], Bar[{}], Chr[{}]",
+				tick().to_string(),
 				m_customerId.get_id_number(), m_barberId.get_id_number(),
 				m_chairId.get_id_number()));
 
@@ -225,17 +240,18 @@ void CompleteHaircutEvent::execve()
 	Tick startHaircutTime { tick() };
 	startHaircutTime.increament(1);
 	auto pCustomer { m_objManager.get_obj<Customer>(m_customerId) };
-	m_eventManager.emplace<StartHaircutEvent>(
-			m_objManager,
-			m_eventManager,
-			m_customerQue,
-			m_barberManager,
-			m_chairManager,
-			startHaircutTime,
-			base_time(),
-			m_output,
-			pCustomer->get_level()
-	);
+	if (m_customerQue.get_que_size(pCustomer->get_level()) > 0)
+		m_eventManager.emplace<StartHaircutEvent>(
+				m_objManager,
+				m_eventManager,
+				m_customerQue,
+				m_barberManager,
+				m_chairManager,
+				startHaircutTime,
+				base_time(),
+				m_output,
+				pCustomer->get_level()
+		);
 }
 
 }	//simulation

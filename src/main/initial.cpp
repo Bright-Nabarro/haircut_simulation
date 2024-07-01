@@ -8,7 +8,7 @@ using namespace std;
 static int parser(int argc, char* argv[]);
 static Tick random_tick();
 
-size_t g_customerNum { 400 };
+size_t g_customerNum { 10 };
 size_t g_baseTime { 600 };
 
 void load_saved_data(MainObjManager& objManager)
@@ -69,12 +69,11 @@ static Tick random_tick()
 {
 	static random_device rd;
 	static mt19937 gen { rd() };
-	std::normal_distribution<double> hourDistribution { 23., 1. };
-	int hourInt { static_cast<int>(hourDistribution(gen)) };
-    size_t hour = (hourInt < 0) ? 0 : (hourInt >= 24 ? 23 : static_cast<size_t>(hourInt));
 	
-	std::uniform_int_distribution<size_t> uniformDist { 0, 59 };
-	size_t min { uniformDist(gen) };
-	size_t sec { uniformDist(gen) };
+	std::uniform_int_distribution<size_t> distMinSec { 0, 59 };
+	std::uniform_int_distribution<size_t> distHour { 7, 20 };
+	size_t hour { distHour(gen) };
+	size_t min { distHour(gen) };
+	size_t sec { distHour(gen) };
 	return Tick { hour, min, sec };
 }
