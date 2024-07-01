@@ -1,5 +1,4 @@
 #pragma once
 #include "initial.hpp"
-#include "event.hpp"
 
-int main_loop(MainObjManager& objManager);
+int main_loop(MainObjManager& objManager, MainEventManager& eventManager);

@@ -63,7 +63,7 @@ private:
 	const auto& check_level(Level level) const;
 	const Manager& m_manager;
 	std::unordered_map<Level,
-		std::deque<std::reference_wrapper<const Id<Customer>>>> m_waitingQues;
+		std::deque<std::shared_ptr<Id<Customer>>>> m_waitingQues;
 };
 
 #ifdef DEBUG	//用于单元测试

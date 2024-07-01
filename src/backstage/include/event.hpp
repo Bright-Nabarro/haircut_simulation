@@ -16,7 +16,11 @@ class Event
 protected:
 	using SimulationManager = ObjectManager<Customer, Barber, Chair>;
 public:
-	Event(SimulationManager& objManager, EventManager<Event>& eventManager,
+	Event(	SimulationManager& objManager,
+			EventManager<Event>& eventManager,
+			CustomerWaitingQue<SimulationManager>& customerQue,
+			BarberManager<SimulationManager>& barberManager,
+			ChairManager<SimulationManager>& chairManager,
 			const Tick& tick,
 			double baseTime,
 			std::function<void(std::string_view)> output);
@@ -25,9 +29,9 @@ protected:
 	virtual void execve() = 0;
 	SimulationManager& m_objManager;
 	EventManager<Event>& m_eventManager;
-	CustomerWaitingQue<SimulationManager> m_customerQue;
-	BarberManager<SimulationManager> m_barberManager;
-	ChairManager<SimulationManager> m_chairManager;
+	CustomerWaitingQue<SimulationManager>& m_customerQue;
+	BarberManager<SimulationManager>& m_barberManager;
+	ChairManager<SimulationManager>& m_chairManager;
 	Tick tick() const;
 	constexpr double base_time() const;
 private:
@@ -41,8 +45,13 @@ protected:
 class CustomerArrivalEvent: public Event
 {
 public:
-	CustomerArrivalEvent(SimulationManager& objManager,
-			EventManager<Event>& eventManager, const Tick& tick,
+	CustomerArrivalEvent(
+			SimulationManager& objManager,
+			EventManager<Event>& eventManager,
+ 			CustomerWaitingQue<SimulationManager>& customerQue,
+			BarberManager<SimulationManager>& barberManager,
+			ChairManager<SimulationManager>& chairManager,
+			const Tick& tick,
 			double baseTime,
 			std::function<void(std::string_view)> output,
 			const Id<Customer>& customerId
@@ -58,8 +67,12 @@ private:
 class StartHaircutEvent: public Event
 {
 public:
-	StartHaircutEvent(SimulationManager& objManager,
+	StartHaircutEvent(
+			SimulationManager& objManager,
 			EventManager<Event>& eventManager,
+			CustomerWaitingQue<SimulationManager>& customerQue,
+			BarberManager<SimulationManager>& barberManager,
+			ChairManager<SimulationManager>& chairManager,
 			const Tick& tick,
 			double baseTime,
 			std::function<void(std::string_view)> output,
@@ -73,8 +86,12 @@ private:
 class CustomerLeaveEvent: public Event
 {
 public:
-	CustomerLeaveEvent(SimulationManager& objManager,
+	CustomerLeaveEvent(
+			SimulationManager& objManager,
 			EventManager<Event>& eventManager,
+			CustomerWaitingQue<SimulationManager>& customerQue,
+			BarberManager<SimulationManager>& barberManager,
+			ChairManager<SimulationManager>& chairManager,
 			const Tick& tick,
 			double baseTime,
 			std::function<void(std::string_view)> output,
@@ -91,6 +108,9 @@ class CompleteHaircutEvent: public Event
 public:
 	CompleteHaircutEvent(SimulationManager& objManager,
 			EventManager<Event>& eventManager,
+			CustomerWaitingQue<SimulationManager>& customerQue,
+			BarberManager<SimulationManager>& barberManager,
+			ChairManager<SimulationManager>& chairManager,
 			const Tick& tick,
 			double baseTime,
 			std::function<void(std::string_view)> output,

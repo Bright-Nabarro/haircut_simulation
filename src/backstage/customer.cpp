@@ -68,7 +68,7 @@ void Customer::start_cuting_hear() noexcept
 template<typename Manager>
 CustomerWaitingQue<Manager>::CustomerWaitingQue(const Manager& manager) :
 	m_manager { manager },
-	m_waitingQues {}
+	m_waitingQues {0}
 {
 	ini_map();
 }
@@ -95,14 +95,14 @@ std::vector<double> CustomerWaitingQue<Manager>::push(const Id<Customer>& idCust
 		level = find_min_que();
 
 	auto& que { check_level(level) };
-	que.push_back(pCustomer->get_id());
+	que.push_back(pCustomer->get_shared());
 	pCustomer->set_level(level);
 
 	std::vector<double> result;
 	result.reserve(que.size());
-	for (const auto& customerIdRef : que)
+	for (const auto& pCustomerId : que)
 	{
-		auto eachCustomer { m_manager.template get_obj<Customer>(customerIdRef.get()) };
+		auto eachCustomer { m_manager.template get_obj<Customer>(*pCustomerId) };
 		result.push_back(eachCustomer->get_time_factor());
 	}
 	return result;
@@ -112,11 +112,17 @@ template<typename Manager>
 const Id<Customer>& CustomerWaitingQue<Manager>::pop(Level level)
 {
 	auto& que { check_level(level) };
+	if (que.empty())
+		throw logic_error { "pop operation with an empty queue" };
 	
 	auto result { que.front() };
+
+	if (result == nullptr)
+		throw logic_error { "id invalidation" };
+
 	que.pop_front();
 	
-	return result.get();
+	return *result;
 }
 
 template<typename Manager>

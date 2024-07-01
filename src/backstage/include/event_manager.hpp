@@ -3,6 +3,7 @@
 #include <queue>
 #include <stdexcept>
 #include <memory>
+#include <cassert>
 
 namespace simulation
 {
@@ -25,8 +26,8 @@ public:
 			throw std::logic_error("No events in EventManager");
 
 		Itr itr { m_queue.top() };
-		m_queue.pop();
 		(*itr)->execve();
+		m_queue.pop();
 		//c++标准保证list的其余迭代器在删除之后仍然有效
 		m_events.erase(itr);
 	}
