@@ -31,11 +31,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 #主程序
 add_subdirectory("src/backstage")
+add_subdirectory("src/io")
 add_subdirectory("src/main")
 
 #单元测试
 if(ENABLE_DEBUG)
 	add_subdirectory("test/backstage")
+	add_subdirectory("test/io")
 endif()
 
 #将clangd_custom_target复制到CMakeLists.txt所在目录

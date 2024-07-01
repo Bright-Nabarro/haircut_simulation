@@ -5,3 +5,4 @@ build_run.sh
 bin/
 .gdb_history
 lib/
+data/

@@ -42,8 +42,26 @@
   "output": "src/backstage/CMakeFiles/Backstage_Lib.dir/factory.cpp.o"
 },
 {
+  "directory": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/build/src/io",
+  "command": "/usr/sbin/c++ -DDEBUG -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/io/./include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/backstage/include -g -std=c++23 -Wall -Wextra -Weffc++ -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wconversion -Wsign-conversion -o CMakeFiles/SimIo_Lib.dir/io_barchr.cpp.o -c /home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/io/io_barchr.cpp",
+  "file": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/io/io_barchr.cpp",
+  "output": "src/io/CMakeFiles/SimIo_Lib.dir/io_barchr.cpp.o"
+},
+{
   "directory": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/build/src/main",
-  "command": "/usr/sbin/c++ -DDEBUG -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/./include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/../backstage/include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/extern/include -g -std=c++23 -Wall -Wextra -Weffc++ -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wconversion -Wsign-conversion -o CMakeFiles/app.dir/main.cpp.o -c /home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/main.cpp",
+  "command": "/usr/sbin/c++ -DDEBUG -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/./include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/../backstage/include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/../io/include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/extern/include -g -std=c++23 -Wall -Wextra -Weffc++ -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wconversion -Wsign-conversion -o CMakeFiles/app.dir/business_loop.cpp.o -c /home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/business_loop.cpp",
+  "file": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/business_loop.cpp",
+  "output": "src/main/CMakeFiles/app.dir/business_loop.cpp.o"
+},
+{
+  "directory": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/build/src/main",
+  "command": "/usr/sbin/c++ -DDEBUG -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/./include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/../backstage/include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/../io/include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/extern/include -g -std=c++23 -Wall -Wextra -Weffc++ -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wconversion -Wsign-conversion -o CMakeFiles/app.dir/initial.cpp.o -c /home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/initial.cpp",
+  "file": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/initial.cpp",
+  "output": "src/main/CMakeFiles/app.dir/initial.cpp.o"
+},
+{
+  "directory": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/build/src/main",
+  "command": "/usr/sbin/c++ -DDEBUG -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/./include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/../backstage/include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/../io/include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/extern/include -g -std=c++23 -Wall -Wextra -Weffc++ -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wconversion -Wsign-conversion -o CMakeFiles/app.dir/main.cpp.o -c /home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/main.cpp",
   "file": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/main.cpp",
   "output": "src/main/CMakeFiles/app.dir/main.cpp.o"
 },
@@ -52,5 +70,11 @@
   "command": "/usr/sbin/c++ -DDEBUG -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/backstage/include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/extern/include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/test/backstage/./include -g -std=c++23 -Wall -Wextra -Weffc++ -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wconversion -Wsign-conversion -o CMakeFiles/backstage.dir/main.cpp.o -c /home/lin17_2/workspace/contest/big_work/data_structure/simulation/test/backstage/main.cpp",
   "file": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/test/backstage/main.cpp",
   "output": "test/backstage/CMakeFiles/backstage.dir/main.cpp.o"
+},
+{
+  "directory": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/build/test/io",
+  "command": "/usr/sbin/c++ -DDEBUG -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/io/include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/backstage/include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/test/io/./include -g -std=c++23 -Wall -Wextra -Weffc++ -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wconversion -Wsign-conversion -o CMakeFiles/io.dir/main.cpp.o -c /home/lin17_2/workspace/contest/big_work/data_structure/simulation/test/io/main.cpp",
+  "file": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/test/io/main.cpp",
+  "output": "test/io/CMakeFiles/io.dir/main.cpp.o"
 }
 ]

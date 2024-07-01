@@ -7,7 +7,7 @@ namespace simulation
 
 using namespace std;
 
-[[nodiscard]]
+[[maybe_unused]]
 std::shared_ptr<Customer> CustomerFactory::create_customer(Level level, double timeFactor,
 		size_t maxWaitingTime)
 {
@@ -22,7 +22,7 @@ std::shared_ptr<Customer> CustomerFactory::create_customer(Level level, double t
 	return create_obj(level, timeFactor, maxWaitingTime);
 }
 
-[[nodiscard]]
+[[maybe_unused]]
 std::shared_ptr<Barber> BarberFactory::create_barber(Level level, double timeFactor)
 {
 	if (level == Level::FAST)
@@ -31,7 +31,7 @@ std::shared_ptr<Barber> BarberFactory::create_barber(Level level, double timeFac
 	return create_obj(level, timeFactor);
 }
 
-[[nodiscard]]
+[[maybe_unused]]
 std::shared_ptr<Chair> ChairFactory::create_chair()
 {
 	return create_obj();

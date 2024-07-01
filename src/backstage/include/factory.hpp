@@ -36,7 +36,7 @@ class CustomerFactory : ObjFactory<Customer, Manager>
 {
 public:
 	using ObjFactory<Customer, Manager>::ObjFactory;
-	[[nodiscard]]
+	[[maybe_unused]]
 	std::shared_ptr<Customer> create_customer(Level level, double timeFactor, size_t maxWaitingTime);
 };
 
@@ -44,7 +44,7 @@ class BarberFactory : ObjFactory<Barber, Manager>
 {
 public:
 	using ObjFactory<Barber, Manager>::ObjFactory;
-	[[nodiscard]]
+	[[maybe_unused]]
 	std::shared_ptr<Barber> create_barber(Level level, double timeFactor);
 };
 
@@ -52,7 +52,7 @@ class ChairFactory : ObjFactory<Chair, Manager>
 {
 public:
 	using ObjFactory<Chair, Manager>::ObjFactory;
-	[[nodiscard]]
+	[[maybe_unused]]
 	std::shared_ptr<Chair> create_chair();
 };
 
