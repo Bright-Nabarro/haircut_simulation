@@ -13,12 +13,15 @@ struct Hms
 	size_t sec;
 };
 
+Hms cvt_seconds_to_hms(size_t seconds);
+
 
 class Tick
 {
 public:
 	//注意：初始化Tick时禁止在数字头部填充0
-	explicit Tick(size_t h, size_t m, size_t s);
+	Tick(size_t h, size_t m, size_t s);
+	explicit Tick(const Hms& hms);
 	virtual ~Tick() = default;
 
 	[[nodiscard]]

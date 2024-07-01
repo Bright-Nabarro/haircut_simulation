@@ -1,3 +1,4 @@
+#include "exception.hpp"
 #include "test_header.hpp"
 #include "factory.hpp"
 #include "object_manager.hpp"
@@ -115,4 +116,69 @@ void test_fac_complex()
 
     assert(manager.contains(chair1->get_id()));
     assert(manager.contains(chair2->get_id()));
+}
+
+TPF
+void test_spec_factory()
+{
+	using namespace simulation;
+	using Mgr = ObjectManager<Customer, Barber, Chair>;
+    Mgr manager;
+
+    CustomerFactory customerFactory(manager);
+    BarberFactory barberFactory(manager);
+    ChairFactory chairFactory(manager);
+
+    // 测试 CustomerFactory 异常
+    try {
+        auto _ = customerFactory.create_customer(Level::BEG, 1.5, 86400);
+		assert(false);
+    } catch (const InvalidMaxWaitingTime& e) {
+    }	catch(...)
+	{
+		assert(false);
+	}
+
+    try {
+        auto _ = customerFactory.create_customer(Level::BEG, -1.0, 3600);
+		assert(false);
+    } catch (const std::runtime_error& e) {
+    }	catch(...)
+	{
+		assert(false);
+	}
+
+    // 测试 BarberFactory 异常
+    try {
+        auto _ = barberFactory.create_barber(Level::FAST, 1.5);
+		assert(false);
+    } catch (const InvalidLevel& e) {
+    }	catch(...)
+	{
+		assert(false);
+	}
+
+    try {
+        auto _ = barberFactory.create_barber(Level::ADV, -1.0);
+		assert(false);
+    } catch (const std::runtime_error& e) {
+    }
+	catch(...)
+	{
+		assert(false);
+	}
+
+    // 简单对象创建测试
+    auto customer = customerFactory.create_customer(Level::INT, 1.5, 3600);
+    auto barber = barberFactory.create_barber(Level::INT, 1.5);
+    auto chair = chairFactory.create_chair();
+
+    assert(customer != nullptr);
+    assert(barber != nullptr);
+    assert(chair != nullptr);
+
+    // 检查对象是否已注册到对应的 ObjectManager 中
+    assert(manager.contains(customer->get_id()));
+    assert(manager.contains(barber->get_id()));
+    assert(manager.contains(chair->get_id()));
 }

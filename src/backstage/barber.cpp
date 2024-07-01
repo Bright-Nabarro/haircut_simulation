@@ -71,6 +71,12 @@ const Id<Customer>& Barber::get_customer_id() const
 	
 	return *m_pCustomerId;
 }
+
+[[nodiscard]]
+double Barber::get_total_worktime() const
+{
+	return m_totalWorktime;
+}
 	
 void Barber::set_customer_id(std::shared_ptr<Id<Customer>> pCustomerId)
 {
@@ -82,6 +88,11 @@ void Barber::release_customer()
 	if (!busy())
 		throw logic_error { "Barber dose not store a customerId" };
 	m_pCustomerId = nullptr;
+}
+
+void Barber::increase_worktime(double time)
+{
+	m_totalWorktime += time;
 }
 
 template<typename Manager>

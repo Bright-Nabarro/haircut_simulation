@@ -4,6 +4,7 @@
 #include "object_manager_test.hpp"
 #include "factory_test.hpp"
 #include "event_manager_test.hpp"
+#include "event_test.hpp"
 
 static void base_utility_test()
 {
@@ -11,6 +12,7 @@ static void base_utility_test()
 	test_Tick_ini();
 	test_Tick_cpr();
 	test_Tick_inc();
+	test_cvts2h();
 
 	//Id class test
 	test_Id_ini();
@@ -62,6 +64,7 @@ static void factory_test()
 	test_fac_ini();
 	test_fac_create();
 	test_fac_complex();
+	test_spec_factory();
 }
 
 static void event_manager_test()
@@ -71,6 +74,11 @@ static void event_manager_test()
 	test_em_execve();
 }
 
+static void event_test()
+{
+	test_event_ini();
+}
+
 int main()
 {
 	base_utility_test();
@@ -78,5 +86,6 @@ int main()
 	object_manager_test();
 	factory_test();
 	event_manager_test();
+	event_test();
 	std::println("((>ω<))↗ok");
 }

@@ -1,8 +1,6 @@
 #pragma once
 #include <unordered_set>
-#include <unordered_map>
 #include "base_utility.hpp"
-#include "exception.hpp"
 #include "test_header.hpp"
 
 
@@ -13,6 +11,19 @@ void test_Tick_ini()
 	using namespace std;
 	Tick t1(1, 30, 45);
 	assert(t1 == Tick(1, 30, 45));
+
+	Hms hms1 {10, 20, 30};
+    Tick tick1(hms1);
+
+    // 定义一个 Hms 对象
+    Hms hms2 {10, 20, 30};
+    Tick tick2(hms2);
+
+    // 使用相同的时间初始化另一个 Tick 对象
+    Tick tick3(10, 20, 30);
+
+    // 检查两个 Tick 对象是否相等（假设有一个相等运算符）
+    assert(tick3 == tick2);
 }
 
 TPF
@@ -50,6 +61,60 @@ void test_Tick_inc()
 	assert(t1 == Tick(3, 1, 15)); // 3:01:15
 }
 
+TPF
+void test_cvts2h()
+{
+    using namespace simulation;
+
+    // 测试转换函数
+    size_t seconds = 3661; // 1 hour, 1 minute, 1 second
+    Hms hms = cvt_seconds_to_hms(seconds);
+
+    // 检查转换结果
+    assert(hms.hour == 1);
+    assert(hms.min == 1);
+    assert(hms.sec == 1);
+
+    // 测试不同的秒数
+    seconds = 7322; // 2 hours, 2 minutes, 2 seconds
+    hms = cvt_seconds_to_hms(seconds);
+
+    assert(hms.hour == 2);
+    assert(hms.min == 2);
+    assert(hms.sec == 2);
+
+    // 测试边界情况
+    seconds = 0; // 0 hours, 0 minutes, 0 seconds
+    hms = cvt_seconds_to_hms(seconds);
+
+    assert(hms.hour == 0);
+    assert(hms.min == 0);
+    assert(hms.sec == 0);
+
+    // 测试仅有秒数
+    seconds = 59; // 0 hours, 0 minutes, 59 seconds
+    hms = cvt_seconds_to_hms(seconds);
+
+    assert(hms.hour == 0);
+    assert(hms.min == 0);
+    assert(hms.sec == 59);
+
+    // 测试分钟和秒数
+    seconds = 3600; // 1 hour, 0 minutes, 0 seconds
+    hms = cvt_seconds_to_hms(seconds);
+
+    assert(hms.hour == 1);
+    assert(hms.min == 0);
+    assert(hms.sec == 0);
+
+    // 测试大于一天的秒数
+    seconds = 90061; // 25 hours, 1 minute, 1 second (extra hours)
+    hms = cvt_seconds_to_hms(seconds);
+
+    assert(hms.hour == 25);
+    assert(hms.min == 1);
+    assert(hms.sec == 1);
+}
 
 TPF
 void test_Id_ini()

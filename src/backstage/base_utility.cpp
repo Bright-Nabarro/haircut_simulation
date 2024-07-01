@@ -6,14 +6,19 @@ namespace simulation
 {
 using namespace std;
 
-Tick::Tick(size_t h, size_t m, size_t s) :
-	m_timestamp {0}
-{
-	check_valid(h, m, s);	
-	Hms hms {.hour = h, .min = m, .sec = s};
-	m_timestamp = hms2tick(hms);
-	s_tick2hmsTable[m_timestamp] = hms;
+Hms cvt_seconds_to_hms(size_t totalSeconds)
+{	
+	//具体的面向用户的错误检查由工厂完成
+	size_t hour { totalSeconds / 3600 };
+	totalSeconds %= 3600;
+	size_t min { totalSeconds / 60 };
+	size_t sec { totalSeconds % 60 };
+	return Hms { .hour = hour, .min = min, .sec = sec };
 }
+
+Tick::Tick(size_t h, size_t m, size_t s) :
+	Tick( Hms{.hour = h, .min = m, .sec = s } )
+{ }
 
 bool Tick::operator==(const Tick& rhs)const noexcept
 {
@@ -53,6 +58,14 @@ void Tick::increament(size_t h, size_t m, size_t s)
 	s_tick2hmsTable[m_timestamp] = hms;
 }
 
+Tick::Tick(const Hms& hms) :
+	m_timestamp {0}
+{
+	check_valid(hms.hour, hms.min, hms.sec);	
+	m_timestamp = hms2tick(hms);
+	s_tick2hmsTable[m_timestamp] = hms;
+}
+
 auto Tick::tick2hms() const -> const Hms&
 {	
 	auto itr { s_tick2hmsTable.find(m_timestamp) };
@@ -78,6 +91,8 @@ void Tick::check_valid(size_t h, size_t m, size_t s)
 	if (s >= 60)
 		throw InvalidTimepoint { format("input second: {} invalid", s) };
 }
+
+
 
 }		//namespace simulation
 

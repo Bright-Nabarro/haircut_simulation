@@ -32,7 +32,7 @@ public:
 	}
 
 	template<typename EventTypeChild, typename... Args>
-	void emplace(Args... args)
+	void emplace(Args&&... args)
 	{
 		assert(m_queue.size() == m_events.size());
 		static_assert(std::is_base_of<EventType, EventTypeChild>::value,

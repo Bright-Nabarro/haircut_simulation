@@ -35,6 +35,13 @@ Level Customer::get_level() const noexcept
 	return m_level;
 }
 
+void Customer::set_level(Level level)
+{
+	if (level == Level::FAST)
+		throw logic_error { "set level of Customer cannot be FAST" };
+	m_level = level;
+}
+
 [[nodiscard]]
 double Customer::get_time_factor() const noexcept
 {
@@ -76,7 +83,8 @@ size_t CustomerWaitingQue<Manager>::get_que_size(Level level) const
 }
 
 template<typename Manager>
-void CustomerWaitingQue<Manager>::push(const Id<Customer>& idCustomer)
+[[maybe_unused]]
+std::vector<double> CustomerWaitingQue<Manager>::push(const Id<Customer>& idCustomer)
 {
 	auto pCustomer { m_manager.template get_obj<Customer>(idCustomer) };
 	if (pCustomer == nullptr)
@@ -88,6 +96,16 @@ void CustomerWaitingQue<Manager>::push(const Id<Customer>& idCustomer)
 
 	auto& que { check_level(level) };
 	que.push_back(pCustomer->get_id());
+	pCustomer->set_level(level);
+
+	std::vector<double> result;
+	result.reserve(que.size());
+	for (const auto& customerIdRef : que)
+	{
+		auto eachCustomer { m_manager.template get_obj<Customer>(customerIdRef.get()) };
+		result.push_back(eachCustomer->get_time_factor());
+	}
+	return result;
 }
 
 template<typename Manager>

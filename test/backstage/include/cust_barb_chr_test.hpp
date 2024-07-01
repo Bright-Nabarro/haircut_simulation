@@ -85,6 +85,7 @@ void test_barber_accessor(bool display = false)
 	assert(barber.get_level() == Level::BEG);
 	assert(barber.get_time_factor() == 1.0);
 	assert(barber.busy() == false);
+	assert(barber.get_total_worktime() == 0);
 
 	if (display) {
 		std::println("Barber ID: {}", barber.get_id().get_id_number());
@@ -122,6 +123,17 @@ void test_barber_modifier(bool display = false)
 	if (display) {
 		std::println("Barber released the customer and is now busy: {}", barber.busy());
 	}
+
+	barber.increase_worktime(2.5);
+    assert(barber.get_total_worktime() == 2.5);
+
+    // 再次增加工作时间
+    barber.increase_worktime(1.5);
+    assert(barber.get_total_worktime() == 4.0);
+
+    // 测试增加 0 时间
+    barber.increase_worktime(0.0);
+    assert(barber.get_total_worktime() == 4.0);
 }
 
 TPF 

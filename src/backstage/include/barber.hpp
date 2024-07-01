@@ -33,8 +33,14 @@ public:
 	[[nodiscard]]
 	const Id<Customer>& get_customer_id() const;
 
+	[[nodiscard]]
+	double get_total_worktime() const;
+
 	void set_customer_id(std::shared_ptr<Id<Customer>> pCustomerId);
+
 	void release_customer();
+
+	void increase_worktime(double time);
 
 private:
 	const std::shared_ptr<Id<Barber>> m_pId;

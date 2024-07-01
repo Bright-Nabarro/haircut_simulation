@@ -1,4 +1,5 @@
 #pragma once
+#include <functional>
 #include "base_utility.hpp"
 #include "object_manager.hpp"
 #include "customer.hpp"
@@ -15,7 +16,10 @@ class Event
 protected:
 	using SimulationManager = ObjectManager<Customer, Barber, Chair>;
 public:
-	Event(SimulationManager& objManager, EventManager<Event>& eventManager, const Tick& tick);
+	Event(SimulationManager& objManager, EventManager<Event>& eventManager,
+			const Tick& tick,
+			double baseTime,
+			std::function<void(std::string_view)> output);
 	virtual ~Event() = default;
 protected:
 	virtual void execve() = 0;
@@ -24,9 +28,13 @@ protected:
 	CustomerWaitingQue<SimulationManager> m_customerQue;
 	BarberManager<SimulationManager> m_barberManager;
 	ChairManager<SimulationManager> m_chairManager;
-	Tick tick();
+	Tick tick() const;
+	constexpr double base_time() const;
 private:
 	Tick m_tick;
+	double m_baseTime;
+protected:
+	std::function<void(std::string_view)> m_output;
 };
 
 
@@ -34,12 +42,16 @@ class CustomerArrivalEvent: public Event
 {
 public:
 	CustomerArrivalEvent(SimulationManager& objManager,
-			EventManager<Event>& eventManager, const Tick& tick, const Id<Customer> customerId);
+			EventManager<Event>& eventManager, const Tick& tick,
+			double baseTime,
+			std::function<void(std::string_view)> output,
+			const Id<Customer>& customerId
+			);
 private:
 	void execve() override;
-	Tick max_wait_time();
-	Tick start_haircut_time();
-	std::shared_ptr<Customer> pCustomer;
+	Tick max_wait_time() const;
+	Tick start_haircut_time(const std::vector<double>& factorList) const;
+	std::shared_ptr<Customer> m_pCustomer;
 };
 
 
@@ -47,25 +59,49 @@ class StartHaircutEvent: public Event
 {
 public:
 	StartHaircutEvent(SimulationManager& objManager,
-			EventManager<Event>& eventManager, const Tick& tick, const Id<Customer> customerId);
+			EventManager<Event>& eventManager,
+			const Tick& tick,
+			double baseTime,
+			std::function<void(std::string_view)> output,
+			Level level);
 private:
 	void execve() override;
-
+	Level m_level;
 };
 
 
 class CustomerLeaveEvent: public Event
 {
 public:
-	void execve() override;
+	CustomerLeaveEvent(SimulationManager& objManager,
+			EventManager<Event>& eventManager,
+			const Tick& tick,
+			double baseTime,
+			std::function<void(std::string_view)> output,
+			const Id<Customer>& customerId);
+
 private:
+	void execve() override;
+	std::shared_ptr<Customer> m_pCustomer;
 };
 
 
 class CompleteHaircutEvent: public Event
 {
 public:
+	CompleteHaircutEvent(SimulationManager& objManager,
+			EventManager<Event>& eventManager,
+			const Tick& tick,
+			double baseTime,
+			std::function<void(std::string_view)> output,
+			const Id<Customer>& customerId,
+			const Id<Barber>& barberId,
+			const Id<Chair>& chairId);
+
 private:
+	const Id<Customer>& m_customerId;
+	const Id<Barber>& m_barberId;
+	const Id<Chair>& m_chairId;
 	void execve() override;
 };
 

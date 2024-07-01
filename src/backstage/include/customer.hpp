@@ -21,6 +21,9 @@ public:
 	[[nodiscard]]
 	Level get_level() const noexcept;
 
+	//禁止FAST
+	void set_level(Level level);
+
 	[[nodiscard]]
 	double get_time_factor() const noexcept;
 
@@ -34,7 +37,7 @@ public:
 
 private:
 	const std::shared_ptr<Id<Customer>> m_pId;
-	const Level m_level;
+	Level m_level;
 	const double m_timeFactor;	//消耗时间系数
 	const size_t m_maxWaitingTime; //最长等待时间
 	bool m_haircutStarted;
@@ -49,7 +52,8 @@ public:
 	//以人数作为比较依据，level不包含FAST
 	size_t get_que_size(Level level) const;
 	//这里支持FAST
-	void push(const Id<Customer>& idCustomer);
+	[[maybe_unused]]
+	std::vector<double> push(const Id<Customer>& idCustomer);
 	const Id<Customer>& pop(Level level);
 	
 private:
