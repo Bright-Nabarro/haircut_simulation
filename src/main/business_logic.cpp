@@ -46,3 +46,16 @@ int main_loop(MainObjManager& objManager, MainEventManager& eventManager)
 	}
 	return 0;
 }
+
+std::pair<double, double> statistics(MainObjManager& objManager)
+{
+	double totalIncome { 0 }, totalWorktime { 0 };
+	for (auto itr { objManager.cbegin<Barber>() };
+		 itr != objManager.cend<Barber>();
+		 ++itr)
+	{
+		totalIncome += itr->second->get_income();
+		totalWorktime += itr->second->get_total_worktime();
+	}
+	return { totalIncome, totalWorktime };
+}

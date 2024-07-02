@@ -17,6 +17,7 @@ Event::Event( SimulationManager& objManager,
 		ChairManager<SimulationManager>& chairManager,
 		const Tick& tick,
 		double baseTime,
+		const std::map<Level, double>& feeSchedule,
 		std::function<void(std::string_view)> output) :
 	m_objManager 	{ objManager },
 	m_eventManager 	{ eventManager },
@@ -25,6 +26,7 @@ Event::Event( SimulationManager& objManager,
 	m_chairManager 	{ chairManager },
 	m_tick 			{ tick },
 	m_baseTime 		{ baseTime },
+	m_feeSchedule 	{ feeSchedule },
 	m_output 		{ output }
 { }
 
@@ -50,11 +52,12 @@ CustomerArrivalEvent::CustomerArrivalEvent(
 		ChairManager<SimulationManager>& chairManager,
 		const Tick& tick,
 		double baseTime,
+		const std::map<Level, double>& feeSchedule,
 		std::function<void(std::string_view)> output,
 		const Id<Customer>& customerId) :
 
 	Event { objManager, eventManager, customerQue, barberManager,
-		chairManager, tick, baseTime, output },
+		chairManager, tick, baseTime, feeSchedule, output },
 	m_pCustomer { objManager.get_obj<Customer>(customerId) }
 { }
 
@@ -76,6 +79,7 @@ void CustomerArrivalEvent::execve()
 			m_chairManager,
 			startHaircutTime,
 			base_time(),
+			m_feeSchedule,
 			m_output,
 			m_pCustomer->get_level()
 		);
@@ -92,6 +96,7 @@ void CustomerArrivalEvent::execve()
 			m_chairManager,
 			leaveTick,
 			base_time(),
+			m_feeSchedule,
 			m_output,
 			m_pCustomer->get_id()
 		);
@@ -124,10 +129,11 @@ StartHaircutEvent::StartHaircutEvent(SimulationManager& objManager,
 		ChairManager<SimulationManager>& chairManager,
 		const Tick& tick,
 		double baseTime,
+		const std::map<Level, double>& feeSchedule,
 		std::function<void(std::string_view)> output,
 		Level level) :
 	Event { objManager, eventManager, customerQue, barberManager, chairManager,
-		tick, baseTime, output },
+		tick, baseTime, feeSchedule, output },
 	m_level { level }
 {
 	if (level == Level::FAST)
@@ -164,6 +170,7 @@ void StartHaircutEvent::execve()
 			m_chairManager,
 			completeTick,
 			base_time(),
+			m_feeSchedule,
 			m_output,
 			customerId,
 			pBarber->get_id(),
@@ -187,10 +194,11 @@ CustomerLeaveEvent::CustomerLeaveEvent(SimulationManager& objManager,
 		ChairManager<SimulationManager>& chairManager,
 		const Tick& tick,
 		double baseTime,
+		const std::map<Level, double>& feeSchedule,
 		std::function<void(std::string_view)> output,
 		const Id<Customer>& customerId) :
 	Event { objManager, eventManager, customerQue, barberManager, chairManager, 
-		tick, baseTime, output },
+		tick, baseTime, feeSchedule, output },
 	m_pCustomer {  objManager.get_obj<Customer>(customerId) }
 { }
 
@@ -213,12 +221,13 @@ CompleteHaircutEvent::CompleteHaircutEvent(SimulationManager& objManager,
 		ChairManager<SimulationManager>& chairManager,
 		const Tick& tick,
 		double baseTime,
+		const std::map<Level, double>& feeSchedule,
 		std::function<void(std::string_view)> output,
 		const Id<Customer>& customerId,
 		const Id<Barber>& barberId,
 		const Id<Chair>& chairId) :
 	Event { objManager, eventManager, customerQue, barberManager,
-		chairManager, tick, baseTime, output },
+		chairManager, tick, baseTime, feeSchedule, output },
 	m_customerId { customerId },
 	m_barberId { barberId },
 	m_chairId { chairId }
@@ -237,6 +246,7 @@ void CompleteHaircutEvent::execve()
 
 	m_customerQue.pop(pCustomer->get_level());
 	m_barberManager.free_barber(m_barberId);
+	pBarber->add_income(m_feeSchedule.find(pBarber->get_level())->second);
 	m_chairManager.free_chair(m_chairId);
 	Tick startHaircutTime { tick() };
 	if (m_customerQue.get_que_size(pCustomer->get_level()) > 0)
@@ -248,6 +258,7 @@ void CompleteHaircutEvent::execve()
 				m_chairManager,
 				startHaircutTime,
 				base_time(),
+				m_feeSchedule,
 				m_output,
 				pCustomer->get_level()
 		);

@@ -16,12 +16,13 @@ std::shared_ptr<Customer> CustomerFactory::create_customer(Level level, double t
 }
 
 [[maybe_unused]]
-std::shared_ptr<Barber> BarberFactory::create_barber(Level level, double timeFactor, double totalTime)
+std::shared_ptr<Barber> BarberFactory::create_barber(Level level, double timeFactor,
+		double totalTime, double netIncome)
 {
 	if (level == Level::FAST)
 		throw InvalidLevel { "Invalid Level FAST in Barber constructor" };
 	check_time_factor(timeFactor);
-	return create_obj(level, timeFactor, totalTime);
+	return create_obj(level, timeFactor, totalTime, netIncome);
 }
 
 [[maybe_unused]]

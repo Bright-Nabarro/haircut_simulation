@@ -85,7 +85,12 @@ int main(int argc, char* argv[])
 #else
 	initial_data(argc, argv, objManager, eventManager, display,
 			customerWaitingQue, barberManager, chairManager);
-	return main_loop(objManager, eventManager);
+	if ( main_loop(objManager, eventManager) != 0 )
+		return 1;
+
+	auto statisticalData { statistics(objManager) };
+	println("Total net income {}", statisticalData.first);
+	println("Total work time {} seconds", statisticalData.second);
 #endif
 }
 

@@ -41,10 +41,11 @@ bool save_barber(const TyManager& objManager)
 	{
 		auto [ idRef, pBarber ] { *itr };
 		outFile << std::format(
-			"{} {} {}\n",
+			"{} {} {} {}\n",
 			static_cast<int>(pBarber->get_level()),
 			pBarber->get_time_factor(),
-			pBarber->get_total_worktime()
+			pBarber->get_total_worktime(),
+			pBarber->get_income()
 		);
 	}
 	return true;
@@ -72,15 +73,17 @@ bool load_barber(TyManager& objManager)
 		int levelNum { -1 };
 		double timeFactor { 0 };
 		double totalTime { -1 };
+		double netIncome { -1 };
 		issm >> levelNum;
 		issm >> timeFactor;
 		issm >> totalTime;
+		issm >> netIncome;
 
-		if (levelNum == -1 || timeFactor == 0 || totalTime == -1)
+		if (levelNum == -1 || timeFactor == 0 || totalTime == -1 || netIncome == -1)
 			continue;
 
 		BarberFactory barberFactory { objManager };
-		barberFactory.create_barber(static_cast<Level>(levelNum), timeFactor, totalTime);
+		barberFactory.create_barber(static_cast<Level>(levelNum), timeFactor, totalTime, netIncome);
 		successCounter++;
 	}
 

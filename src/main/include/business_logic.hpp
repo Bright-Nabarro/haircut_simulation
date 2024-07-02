@@ -4,4 +4,5 @@
 
 int main_loop(MainObjManager& objManager, MainEventManager& eventManager);
 
-std::vector<double> total_revenue(MainObjManager& objManager);
+//income, worktime
+std::pair<double, double> statistics(MainObjManager& objManager);

@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <map>
 #include "base_utility.hpp"
 #include "object_manager.hpp"
 #include "customer.hpp"
@@ -23,6 +24,7 @@ public:
 			ChairManager<SimulationManager>& chairManager,
 			const Tick& tick,
 			double baseTime,
+			const std::map<Level, double>& feeSchedule,
 			std::function<void(std::string_view)> output);
 	virtual ~Event() = default;
 protected:
@@ -38,6 +40,7 @@ private:
 	Tick m_tick;
 	double m_baseTime;
 protected:
+	const std::map<Level, double>& m_feeSchedule;
 	std::function<void(std::string_view)> m_output;
 };
 
@@ -53,6 +56,7 @@ public:
 			ChairManager<SimulationManager>& chairManager,
 			const Tick& tick,
 			double baseTime,
+			const std::map<Level, double>& feeSchedule,
 			std::function<void(std::string_view)> output,
 			const Id<Customer>& customerId
 			);
@@ -74,6 +78,7 @@ public:
 			ChairManager<SimulationManager>& chairManager,
 			const Tick& tick,
 			double baseTime,
+			const std::map<Level, double>& feeSchedule,
 			std::function<void(std::string_view)> output,
 			Level level);
 private:
@@ -93,6 +98,7 @@ public:
 			ChairManager<SimulationManager>& chairManager,
 			const Tick& tick,
 			double baseTime,
+			const std::map<Level, double>& feeSchedule,
 			std::function<void(std::string_view)> output,
 			const Id<Customer>& customerId);
 
@@ -112,6 +118,7 @@ public:
 			ChairManager<SimulationManager>& chairManager,
 			const Tick& tick,
 			double baseTime,
+			const std::map<Level, double>& feeSchedule,
 			std::function<void(std::string_view)> output,
 			const Id<Customer>& customerId,
 			const Id<Barber>& barberId,

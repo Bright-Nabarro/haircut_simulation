@@ -10,7 +10,7 @@ namespace simulation
 class Barber
 {
 public:
-	Barber(Level level, double timeFactor, double totalWorktime = 0);
+	Barber(Level level, double timeFactor, double totalWorktime = 0, double netIncome = 0);
 	//这里不提供等级是否匹配的检查，需要在上层手动检查
 	Barber(Level level, double timeFactor, std::shared_ptr<Id<Customer>> pCustomerId);
 	virtual ~Barber() = default;
@@ -36,11 +36,17 @@ public:
 	[[nodiscard]]
 	double get_total_worktime() const;
 
+	[[nodiscard]]
+	double get_income() const;
+
 	void set_customer_id(std::shared_ptr<Id<Customer>> pCustomerId);
 
 	void release_customer();
 
 	void increase_worktime(double time);
+
+	void add_income(double income);
+
 
 private:
 	const std::shared_ptr<Id<Barber>> m_pId;
@@ -49,6 +55,7 @@ private:
 	//Id不可复制，所以这里使用引用包装
 	std::shared_ptr<Id<Customer>> m_pCustomerId;
 	double m_totalWorktime;
+	double m_netIncome;
 };
 
 

@@ -9,12 +9,13 @@ using namespace std;
 namespace simulation
 {
 
-Barber::Barber(Level level, double timeFactor, double totalWorktime) :
+Barber::Barber(Level level, double timeFactor, double totalWorktime, double netIncome) :
 	m_pId { make_shared<Id<Barber>>() },
  	m_level { level },
 	m_timeFactor { timeFactor },
 	m_pCustomerId { nullptr }, 
-	m_totalWorktime { totalWorktime }
+	m_totalWorktime { totalWorktime },
+	m_netIncome { netIncome }
 {
 	if (m_level == Level::FAST)
 		throw invalid_argument { "Barber's Level cannot be FAST" };
@@ -77,7 +78,13 @@ double Barber::get_total_worktime() const
 {
 	return m_totalWorktime;
 }
-	
+
+[[nodiscard]]
+double Barber::get_income() const
+{
+	return m_netIncome;
+}
+
 void Barber::set_customer_id(std::shared_ptr<Id<Customer>> pCustomerId)
 {
 	m_pCustomerId = pCustomerId;
@@ -93,6 +100,11 @@ void Barber::release_customer()
 void Barber::increase_worktime(double time)
 {
 	m_totalWorktime += time;
+}
+
+void Barber::add_income(double income)
+{
+	m_netIncome += income;
 }
 
 template<typename Manager>

@@ -8,7 +8,7 @@
 using namespace simulation;
 using namespace std;
 
-static const pair<int, int> g_kLevelRange { 0, 2 };
+static const pair<int, int> g_kLevelRange { 0, 3 };
 
 static size_t g_customerNum { 10 };
 static size_t g_baseTime { 600 };
@@ -84,6 +84,7 @@ void generate_initial_event(MainObjManager& objManager,
 			chairManager,
 			random_tick(),
 			g_baseTime,
+			g_feeSchedule,
 			output,
 			pCustomer->get_id()
 		);

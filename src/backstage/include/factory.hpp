@@ -45,7 +45,8 @@ class BarberFactory : ObjFactory<Barber, UseObjManager>
 public:
 	using ObjFactory<Barber, UseObjManager>::ObjFactory;
 	[[maybe_unused]]
-	std::shared_ptr<Barber> create_barber(Level level, double timeFactor, double totalTime);
+	std::shared_ptr<Barber> create_barber(Level level, double timeFactor,
+			double totalTime, double netIncome);
 };
 
 class ChairFactory : ObjFactory<Chair, UseObjManager>
