@@ -37,7 +37,7 @@ class CustomerFactory : ObjFactory<Customer, UseObjManager>
 public:
 	using ObjFactory<Customer, UseObjManager>::ObjFactory;
 	[[maybe_unused]]
-	std::shared_ptr<Customer> create_customer(Level level, double timeFactor, size_t maxWaitingTime);
+	std::shared_ptr<Customer> create_customer(Level level, double timeFactor, size_t maxBearingLen);
 };
 
 class BarberFactory : ObjFactory<Barber, UseObjManager>

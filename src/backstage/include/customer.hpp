@@ -9,7 +9,7 @@ namespace simulation
 class Customer
 {
 public:
-	Customer(Level level, double timeFactor, size_t maxWaitingTime);
+	Customer(Level level, double timeFactor, size_t maxBearingLen);
 	virtual ~Customer() = default;
 
 	[[nodiscard]]
@@ -28,7 +28,7 @@ public:
 	double get_time_factor() const noexcept;
 
 	[[nodiscard]]
-	size_t get_max_waiting_time() const noexcept;
+	size_t get_max_bearing_len() const noexcept;
 
 	[[nodiscard]]
 	bool haircut_started() const noexcept;
@@ -39,7 +39,7 @@ private:
 	const std::shared_ptr<Id<Customer>> m_pId;
 	Level m_level;
 	const double m_timeFactor;	//消耗时间系数
-	const size_t m_maxWaitingTime; //最长等待时间
+	const size_t m_maxBearingLen; //最大忍受队列人数
 	bool m_haircutStarted;
 };
 

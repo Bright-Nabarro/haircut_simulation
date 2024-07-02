@@ -7,11 +7,11 @@ using namespace std;
 namespace simulation
 {
 
-Customer::Customer(Level level, double timeFactor, size_t maxWaitingTime):
+Customer::Customer(Level level, double timeFactor, size_t maxBearingLen):
 	m_pId{ std::make_shared<Id<Customer>>() },
 	m_level { level }, 
 	m_timeFactor { timeFactor }, 
-	m_maxWaitingTime { maxWaitingTime },
+	m_maxBearingLen { maxBearingLen },
 	m_haircutStarted { false }
 { }
 
@@ -49,9 +49,9 @@ double Customer::get_time_factor() const noexcept
 }
 
 [[nodiscard]]
-size_t Customer::get_max_waiting_time() const noexcept
+size_t Customer::get_max_bearing_len() const noexcept
 {
-	return m_maxWaitingTime;
+	return m_maxBearingLen;
 }
 
 [[nodiscard]]

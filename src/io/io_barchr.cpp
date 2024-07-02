@@ -2,7 +2,6 @@
 #include <fstream>
 #include <format>
 #include <string>
-#include <memory>
 #include <sstream>
 #include <cassert>
 #include "io_barchr.hpp"

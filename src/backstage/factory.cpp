@@ -1,4 +1,3 @@
-#include <format>
 #include "factory.hpp"
 #include "exception.hpp"
 
@@ -9,17 +8,11 @@ using namespace std;
 
 [[maybe_unused]]
 std::shared_ptr<Customer> CustomerFactory::create_customer(Level level, double timeFactor,
-		size_t maxWaitingTime)
+		size_t maxBearingLen)
 {
 	check_time_factor(timeFactor);
-	if (maxWaitingTime >= 60*60*24)
-		throw InvalidMaxWaitingTime {
-			format("Invalid maximum waiting time: {}."
-				   "Maximum waiting time must be less than 24 hours.",
-					maxWaitingTime)
-		};
 
-	return create_obj(level, timeFactor, maxWaitingTime);
+	return create_obj(level, timeFactor, maxBearingLen);
 }
 
 [[maybe_unused]]
@@ -28,7 +21,7 @@ std::shared_ptr<Barber> BarberFactory::create_barber(Level level, double timeFac
 	if (level == Level::FAST)
 		throw InvalidLevel { "Invalid Level FAST in Barber constructor" };
 	check_time_factor(timeFactor);
-	return create_obj(level, timeFactor, totalTime);
+	auto pBarber { create_obj(level, timeFactor, totalTime) };
 }
 
 [[maybe_unused]]

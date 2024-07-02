@@ -13,7 +13,7 @@ void printManager(MainObjManager& objManager)
 	{
 		const auto& p { itr->second };
 		println("\tCustomer {}, factor time {}, maxWaiting time {}",
-				p->get_id().get_id_number(), p->get_time_factor(), p->get_max_waiting_time());
+				p->get_id().get_id_number(), p->get_time_factor(), p->get_max_bearing_len());
 	}
 	//Barber
 	for(auto itr { objManager.cbegin<Barber>() };
@@ -38,6 +38,7 @@ void printManager(MainObjManager& objManager)
 
 int main_loop(MainObjManager& objManager, MainEventManager& eventManager)
 {
+	(void)objManager;
 	while(!eventManager.empty())
 	{
 		//printManager(objManager);

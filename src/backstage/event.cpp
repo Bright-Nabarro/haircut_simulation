@@ -63,10 +63,9 @@ void CustomerArrivalEvent::execve()
 	m_output(std::format("[{}] CustomerArrival Cust[{}]", tick().to_string(), m_pCustomer->get_id().get_id_number()));
 
 	auto factorList { m_customerQue.push(m_pCustomer->get_id()) };
-	Tick maxWaitTime { max_wait_time() };
 	Tick startHaircutTime { start_haircut_time(factorList) };
-	if ( startHaircutTime < maxWaitTime &&
-		 m_customerQue.get_que_size(m_pCustomer->get_level()) == 0) 	//如果相应的顾客队列为空,生成开始理发事件
+	size_t queLen { m_customerQue.get_que_size(m_pCustomer->get_level()) };
+	if (queLen == 1) 	//如果相应的顾客队列为空(自己推入),生成开始理发事件
 	{
 		m_eventManager.emplace<StartHaircutEvent>(
 			m_objManager,
@@ -80,15 +79,17 @@ void CustomerArrivalEvent::execve()
 			m_pCustomer->get_level()
 		);
 	}
-	else 	//生成离队事件, 方便起见，顾客不入队
+	else if (m_pCustomer->get_max_bearing_len() < queLen) 	//生成离队事件, 方便起见，顾客不入队
 	{
+		Tick leaveTick { tick() };
+		leaveTick.increament(1);
 		m_eventManager.emplace<CustomerLeaveEvent>(
 			m_objManager,
 			m_eventManager,
 			m_customerQue,
 			m_barberManager,
 			m_chairManager,
-			maxWaitTime,
+			leaveTick,
 			base_time(),
 			m_output,
 			m_pCustomer->get_id()
@@ -96,15 +97,6 @@ void CustomerArrivalEvent::execve()
 	}
 }
 
-Tick CustomerArrivalEvent::max_wait_time() const
-{
-	//具体的面向用户的错误检查由工厂完成
-	Hms hms { cvt_seconds_to_hms(m_pCustomer->get_max_waiting_time()) };
-	Tick result { tick() };
-	result.increament(hms.hour, hms.min, hms.sec);
-	
-	return result;
-}
 
 Tick CustomerArrivalEvent::start_haircut_time(const std::vector<double>& factorList) const
 {

@@ -58,7 +58,6 @@ public:
 			);
 private:
 	void execve() override;
-	Tick max_wait_time() const;
 	Tick start_haircut_time(const std::vector<double>& factorList) const;
 	std::shared_ptr<Customer> m_pCustomer;
 };
