@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <memory>
 #include <cassert>
+#include "base_utility.hpp"
 
 namespace simulation
 {
@@ -32,6 +33,13 @@ public:
 		m_events.erase(itr);
 	}
 
+	Tick get_next_event_tick()
+	{
+		if (empty())
+			throw std::logic_error("No events in EventManager");
+		return m_queue.top()->get()->tick();
+	}
+
 	template<typename EventTypeChild, typename... Args>
 	void emplace(Args&&... args)
 	{
@@ -47,6 +55,12 @@ public:
 	{
 		assert(m_queue.size() == m_events.size());
 		return m_queue.empty();
+	}
+
+	size_t size() const
+	{
+		assert(m_queue.size() == m_events.size());
+		return m_queue.size();
 	}
 
 private:

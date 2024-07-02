@@ -18,9 +18,12 @@ void initial_parameter();
 
 void load_saved_data(MainObjManager& objManager);
 
-void handle_argument(int argc, char* argv[], MainObjManager& objManager);
+void setting_parameter();
 
 void generate_initial_event(MainObjManager& objManager, MainEventManager& eventManager,
 		std::function<void(std::string_view sv)> output,
 		MainCustWaitingQue& customerWaitingQue, MainBarberManager& barberManager,
-		MainChairManager& chairManager);
+		MainChairManager& chairManager,
+		simulation::SimStatistics& stics);
+
+simulation::Tick close_door_tick();

@@ -1,8 +1,9 @@
 #pragma once
-#include <vector>
 #include "initial.hpp"
 
-int main_loop(MainObjManager& objManager, MainEventManager& eventManager);
+int main_loop(MainObjManager& objManager, MainEventManager& eventManager,
+		simulation::SimStatistics& stics);
 
-//income, worktime
-std::pair<double, double> statistics(MainObjManager& objManager);
+void display_stics(MainObjManager& objManager, simulation::SimStatistics& stics);
+
+void set_step();

@@ -1,6 +1,7 @@
 #include <print>
 #include <random>
 #include <map>
+#include <iostream>
 #include "initial.hpp"
 #include "io_barchr.hpp"
 #include "io_parameter.hpp"
@@ -19,6 +20,7 @@ static map<Level, double> g_feeSchedule {
 	{ Level::INT, 50 },
 	{ Level::ADV, 100 }
 };
+static pair<size_t, size_t> g_openingHours { 7, 20 };
 
 static int parser(int argc, char* argv[]);
 static Tick random_tick();
@@ -27,7 +29,8 @@ void initial_parameter()
 {
 	try
 	{
-		load_parameter(g_customerNum, g_baseTime, g_timeFactorRange, g_maxBearingLenRange, g_feeSchedule);
+		load_parameter(g_customerNum, g_baseTime, g_timeFactorRange,
+				g_maxBearingLenRange, g_feeSchedule, g_openingHours);
 	} catch(runtime_error& e)
 	{
 		println(stderr, "{}", e.what());
@@ -44,18 +47,15 @@ void load_saved_data(MainObjManager& objManager)
 	load_chair(objManager);
 }
 
-void handle_argument(int argc, char* argv[], MainObjManager& objManager)
+void setting_parameter()
 {
-	(void)objManager;
-	switch(parser(argc, argv))
-	{
-	}
 }
 
 void generate_initial_event(MainObjManager& objManager,
 		MainEventManager& eventManager, function<void(string_view sv)> output,
 		MainCustWaitingQue& customerWaitingQue, MainBarberManager& barberManager,
-		MainChairManager& chairManager)
+		MainChairManager& chairManager,
+		simulation::SimStatistics& stics)
 {
 	static random_device rd;
 	static mt19937 gen { rd() };
@@ -86,9 +86,15 @@ void generate_initial_event(MainObjManager& objManager,
 			g_baseTime,
 			g_feeSchedule,
 			output,
+			stics,
 			pCustomer->get_id()
 		);
 	}
+}
+
+Tick close_door_tick()
+{
+	return Tick{g_openingHours.second, 0, 0};
 }
 
 static int parser(int argc, char* argv[])
@@ -105,9 +111,10 @@ static Tick random_tick()
 	static mt19937 gen { rd() };
 	
 	std::uniform_int_distribution<size_t> distMinSec { 0, 59 };
-	std::uniform_int_distribution<size_t> distHour { 7, 20 };
+	std::uniform_int_distribution<size_t> distHour { g_openingHours.first, g_openingHours.second-1 };
 	size_t hour { distHour(gen) };
 	size_t min { distHour(gen) };
 	size_t sec { distHour(gen) };
 	return Tick { hour, min, sec };
 }
+

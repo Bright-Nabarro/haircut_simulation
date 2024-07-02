@@ -17,7 +17,6 @@ endif()
 add_compile_options(
 	-Wall
 	-Wextra
-	-Weffc++
 	-Wpedantic
     -Wshadow
     -Wnon-virtual-dtor

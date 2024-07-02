@@ -1,4 +1,5 @@
 #include <format>
+#include <cassert>
 #include "base_utility.hpp"
 #include "exception.hpp"
 
@@ -14,6 +15,11 @@ Hms cvt_seconds_to_hms(size_t totalSeconds)
 	size_t min { totalSeconds / 60 };
 	size_t sec { totalSeconds % 60 };
 	return Hms { .hour = hour, .min = min, .sec = sec };
+}
+
+size_t hms_to_seconds(const Hms& hms)
+{
+    return hms.hour * 3600 + hms.min * 60 + hms.sec;
 }
 
 Tick::Tick(size_t h, size_t m, size_t s) :
@@ -143,6 +149,7 @@ std::string get_level_str(Level level)
 	case Level::FAST:
 		return "FAST"s;
 	}
+	throw logic_error { "Excepted level type" };
 }
 
 }		//namespace simulation

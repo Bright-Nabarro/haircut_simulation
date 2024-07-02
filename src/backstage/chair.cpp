@@ -120,6 +120,7 @@ void ChairManager<Manager>::free_chair(const Id<Chair>& chairId)
 	if (itr == m_busyChairs.cend())
 		throw logic_error { format("Chair busy list doesnot find id {}",
 				chair->get_id().get_id_number()) };
+	chair->release();
 	m_busyChairs.erase(itr);
 	m_freeChairs.emplace(chair->get_id());
 }

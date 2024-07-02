@@ -22,6 +22,8 @@ static unordered_map<string, size_t> loadMaping {
 	{ "feeScheduleBEG"s,		6 },
 	{ "feeScheduleINT"s,		7 },
 	{ "feeScheduleADV"s,		8 },
+	{ "openingHoursBeg"s,		9 },
+	{ "openingHoursEnd"s,		10},
 };
 
 void load_parameter(
@@ -29,7 +31,9 @@ void load_parameter(
 	size_t& baseTime,
 	std::pair<double, double>& timeFactorRange,
 	std::pair<size_t, size_t>& maxBearingLenRange,
-	std::map<Level, double>& feeSchedule)
+	std::map<Level, double>& feeSchedule,
+	std::pair<size_t, size_t>& openingHours
+	)
 {
 	fs::path dir { dirPath };
 	if (!fs::exists(dir))
@@ -77,6 +81,12 @@ void load_parameter(
 			case 8:
 				feeSchedule[Level::ADV] = stod(value);
 				break;
+			case 9:
+				openingHours.first = stoul(value);
+				break;
+			case 10:
+				openingHours.second = stoul(value);
+				break;
 			}
 		} catch (...) {
 			return;
@@ -102,7 +112,8 @@ void save_parameter(
     size_t baseTime,
     const std::pair<double, double>& timeFactorRange,
     const std::pair<size_t, size_t>& maxBearingLenRange,
-    const std::map<Level, double>& feeSchedule)
+    const std::map<Level, double>& feeSchedule,
+	std::pair<size_t, size_t>& openingHours)
 {
     fs::path dir { dirPath };
     if (!fs::exists(dir))
@@ -121,6 +132,8 @@ void save_parameter(
     outFile << std::format("timeFactorRangeMax={}\n", timeFactorRange.second);
     outFile << std::format("maxBearingLenRangeMin={}\n", maxBearingLenRange.first);
     outFile << std::format("maxBearingLenRangeMax={}\n", maxBearingLenRange.second);
+    outFile << std::format("openingHoursBeg={}\n", openingHours.first);
+    outFile << std::format("openingHoursEnd={}\n", openingHours.second);
 
     for (const auto& [level, fee] : feeSchedule) {
         switch (level) {

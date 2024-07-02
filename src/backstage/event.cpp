@@ -18,7 +18,8 @@ Event::Event( SimulationManager& objManager,
 		const Tick& tick,
 		double baseTime,
 		const std::map<Level, double>& feeSchedule,
-		std::function<void(std::string_view)> output) :
+		std::function<void(std::string_view)> output,
+		SimStatistics& stics) :
 	m_objManager 	{ objManager },
 	m_eventManager 	{ eventManager },
 	m_customerQue 	{ customerQue },
@@ -27,7 +28,8 @@ Event::Event( SimulationManager& objManager,
 	m_tick 			{ tick },
 	m_baseTime 		{ baseTime },
 	m_feeSchedule 	{ feeSchedule },
-	m_output 		{ output }
+	m_output 		{ output },
+	m_stics 		{ stics }
 { }
 
 Tick Event::tick() const
@@ -54,10 +56,12 @@ CustomerArrivalEvent::CustomerArrivalEvent(
 		double baseTime,
 		const std::map<Level, double>& feeSchedule,
 		std::function<void(std::string_view)> output,
-		const Id<Customer>& customerId) :
+		SimStatistics& stics,
+		const Id<Customer>& customerId
+		):
 
 	Event { objManager, eventManager, customerQue, barberManager,
-		chairManager, tick, baseTime, feeSchedule, output },
+		chairManager, tick, baseTime, feeSchedule, output, stics},
 	m_pCustomer { objManager.get_obj<Customer>(customerId) }
 { }
 
@@ -69,6 +73,7 @@ void CustomerArrivalEvent::execve()
 	auto factorList { m_customerQue.push(m_pCustomer->get_id()) };
 	Tick startHaircutTime { start_haircut_time(factorList) };
 	size_t queLen { m_customerQue.get_que_size(m_pCustomer->get_level()) };
+	m_stics.add_que_length(queLen-1);
 	if (queLen == 1) 	//如果相应的顾客队列为空(自己推入),生成开始理发事件
 	{
 		m_eventManager.emplace<StartHaircutEvent>(
@@ -81,6 +86,7 @@ void CustomerArrivalEvent::execve()
 			base_time(),
 			m_feeSchedule,
 			m_output,
+			m_stics,
 			m_pCustomer->get_level()
 		);
 	}
@@ -98,6 +104,7 @@ void CustomerArrivalEvent::execve()
 			base_time(),
 			m_feeSchedule,
 			m_output,
+			m_stics,
 			m_pCustomer->get_id()
 		);
 	}
@@ -113,6 +120,7 @@ Tick CustomerArrivalEvent::start_haircut_time(const std::vector<double>& factorL
 	}
 	Tick result { tick() };
 	Hms hms { cvt_seconds_to_hms(second) };
+	m_stics.add_waiting_time(second);
 	result.increament(hms.hour, hms.min, hms.sec);
 
 	return result;
@@ -131,9 +139,10 @@ StartHaircutEvent::StartHaircutEvent(SimulationManager& objManager,
 		double baseTime,
 		const std::map<Level, double>& feeSchedule,
 		std::function<void(std::string_view)> output,
+		SimStatistics& stics,
 		Level level) :
 	Event { objManager, eventManager, customerQue, barberManager, chairManager,
-		tick, baseTime, feeSchedule, output },
+		tick, baseTime, feeSchedule, output, stics},
 	m_level { level }
 {
 	if (level == Level::FAST)
@@ -172,6 +181,7 @@ void StartHaircutEvent::execve()
 			base_time(),
 			m_feeSchedule,
 			m_output,
+			m_stics,
 			customerId,
 			pBarber->get_id(),
 			pChair->get_id()
@@ -196,9 +206,10 @@ CustomerLeaveEvent::CustomerLeaveEvent(SimulationManager& objManager,
 		double baseTime,
 		const std::map<Level, double>& feeSchedule,
 		std::function<void(std::string_view)> output,
+		SimStatistics& stics,
 		const Id<Customer>& customerId) :
 	Event { objManager, eventManager, customerQue, barberManager, chairManager, 
-		tick, baseTime, feeSchedule, output },
+		tick, baseTime, feeSchedule, output, stics},
 	m_pCustomer {  objManager.get_obj<Customer>(customerId) }
 { }
 
@@ -223,11 +234,12 @@ CompleteHaircutEvent::CompleteHaircutEvent(SimulationManager& objManager,
 		double baseTime,
 		const std::map<Level, double>& feeSchedule,
 		std::function<void(std::string_view)> output,
+		SimStatistics& stics,
 		const Id<Customer>& customerId,
 		const Id<Barber>& barberId,
 		const Id<Chair>& chairId) :
 	Event { objManager, eventManager, customerQue, barberManager,
-		chairManager, tick, baseTime, feeSchedule, output },
+		chairManager, tick, baseTime, feeSchedule, output, stics},
 	m_customerId { customerId },
 	m_barberId { barberId },
 	m_chairId { chairId }
@@ -246,8 +258,8 @@ void CompleteHaircutEvent::execve()
 
 	m_customerQue.pop(pCustomer->get_level());
 	m_barberManager.free_barber(m_barberId);
-	pBarber->add_income(m_feeSchedule.find(pBarber->get_level())->second);
 	m_chairManager.free_chair(m_chairId);
+	pBarber->add_income(m_feeSchedule.find(pBarber->get_level())->second);
 	Tick startHaircutTime { tick() };
 	if (m_customerQue.get_que_size(pCustomer->get_level()) > 0)
 		m_eventManager.emplace<StartHaircutEvent>(
@@ -260,8 +272,56 @@ void CompleteHaircutEvent::execve()
 				base_time(),
 				m_feeSchedule,
 				m_output,
+				m_stics,
 				pCustomer->get_level()
 		);
+}
+
+double SimStatistics::avg_waiting_time() const
+{
+	double sum { 0 };
+	for (auto x : m_waitingTimeVec)
+		sum += static_cast<double>(x);
+
+	return sum / static_cast<double>(m_waitingTimeVec.size());
+}
+
+double SimStatistics::avg_que_length() const
+{
+	double sum { 0 };
+	for (auto x : m_queLengthVec)
+		sum += static_cast<double>(x);
+
+	return sum / static_cast<double>(m_queLengthVec.size());
+}
+
+size_t SimStatistics::get_wrap_up_time() const
+{
+	if (m_wrapUpTime == numeric_limits<size_t>::max())
+		throw logic_error { "unset wrap up time" };
+    return m_wrapUpTime;
+}
+
+void SimStatistics::add_waiting_time(size_t waitingTime)
+{
+	m_waitingTimeVec.push_back(waitingTime);
+}
+
+void SimStatistics::add_que_length(size_t queLength)
+{
+	m_queLengthVec.push_back(queLength);
+}
+
+void SimStatistics::set_wrap_up_time(size_t duration)
+{
+	static bool hasInvoked { false };
+	if (!hasInvoked)
+	{
+		m_wrapUpTime = duration;
+		hasInvoked = true;
+	}
+	else
+		throw logic_error { "set_wrap_up_time has invoked twice" };
 }
 
 }	//simulation

@@ -15,6 +15,7 @@ struct Hms
 };
 
 Hms cvt_seconds_to_hms(size_t seconds);
+size_t hms_to_seconds(const Hms& hms);
 
 class Tick
 {
@@ -42,6 +43,10 @@ public:
 
 	std::string to_string() const;
 
+	Hms get_hms() const
+	{
+		return tick2hms();
+	}
 private:
 	const Hms& tick2hms() const;
 	static uint64_t hms2tick(const Hms& hms);
