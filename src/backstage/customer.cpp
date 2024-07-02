@@ -109,7 +109,7 @@ std::vector<double> CustomerWaitingQue<Manager>::push(const Id<Customer>& idCust
 }
 
 template<typename Manager>
-const Id<Customer>& CustomerWaitingQue<Manager>::pop(Level level)
+const Id<Customer>& CustomerWaitingQue<Manager>::top(Level level) const
 {
 	auto& que { check_level(level) };
 	if (que.empty())
@@ -119,11 +119,19 @@ const Id<Customer>& CustomerWaitingQue<Manager>::pop(Level level)
 
 	if (result == nullptr)
 		throw logic_error { "id invalidation" };
-
-	que.pop_front();
 	
 	return *result;
 }
+
+template<typename Manager>
+void CustomerWaitingQue<Manager>::pop(Level level)
+{
+	auto& que { check_level(level) };
+	if (que.empty())
+		throw logic_error { "pop operation with an empty queue" };
+	que.pop_front();
+}
+
 
 template<typename Manager>
 void CustomerWaitingQue<Manager>::ini_map()

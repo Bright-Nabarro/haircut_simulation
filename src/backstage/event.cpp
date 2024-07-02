@@ -60,7 +60,8 @@ CustomerArrivalEvent::CustomerArrivalEvent(
 
 void CustomerArrivalEvent::execve()
 {
-	m_output(std::format("[{}] CustomerArrival Cust[{}]", tick().to_string(), m_pCustomer->get_id().get_id_number()));
+	m_output(std::format("[{}] CustomerArrival Cust[{}]:[{}]", tick().to_string(),
+				m_pCustomer->get_id().get_id_number(), get_level_str(m_pCustomer->get_level())));
 
 	auto factorList { m_customerQue.push(m_pCustomer->get_id()) };
 	Tick startHaircutTime { start_haircut_time(factorList) };
@@ -143,7 +144,7 @@ void StartHaircutEvent::execve()
 	if (pChair == nullptr)
 		throw logic_error { "charManger busy" };
 	
-	const auto& customerId { m_customerQue.pop(m_level) };
+	const auto& customerId { m_customerQue.top(m_level) };
 	auto pCustomer { m_objManager.get_obj<Customer>(customerId) };
 	pBarber->set_customer_id(pCustomer->get_shared());
 	pChair->set_customer_barber(pCustomer->get_shared(), pBarber->get_shared());
@@ -169,9 +170,10 @@ void StartHaircutEvent::execve()
 			pChair->get_id()
 	);
 
-	m_output(std::format("[{}] StartHaircut Cust[{}] Bar[{}] Chr[{}]",
+	m_output(std::format("[{}] StartHaircut Cust[{}]:[{}] Bar[{}]:[{}] Chr[{}]",
 				tick().to_string(),
-				customerId.get_id_number(), pBarber->get_id().get_id_number(),
+				customerId.get_id_number(), get_level_str(pCustomer->get_level()),
+				pBarber->get_id().get_id_number(), get_level_str(pBarber->get_level()),
 				pChair->get_id().get_id_number()));
 }
 
@@ -194,9 +196,10 @@ CustomerLeaveEvent::CustomerLeaveEvent(SimulationManager& objManager,
 
 void CustomerLeaveEvent::execve()
 {
-	m_output(std::format("[{}] CustomerLeave Cust[{}]",
+	m_output(std::format("[{}] CustomerLeave Cust[{}]:[{}]",
 				tick().to_string(),
-				m_pCustomer->get_id().get_id_number()));
+				m_pCustomer->get_id().get_id_number(),
+				get_level_str(m_pCustomer->get_level())));
 }
 
 /*
@@ -214,7 +217,8 @@ CompleteHaircutEvent::CompleteHaircutEvent(SimulationManager& objManager,
 		const Id<Customer>& customerId,
 		const Id<Barber>& barberId,
 		const Id<Chair>& chairId) :
-	Event { objManager, eventManager, customerQue, barberManager, chairManager, tick, baseTime, output },
+	Event { objManager, eventManager, customerQue, barberManager,
+		chairManager, tick, baseTime, output },
 	m_customerId { customerId },
 	m_barberId { barberId },
 	m_chairId { chairId }
@@ -222,16 +226,19 @@ CompleteHaircutEvent::CompleteHaircutEvent(SimulationManager& objManager,
 
 void CompleteHaircutEvent::execve()
 {
-	m_output(std::format("[{}] CompleteHaircut Cust[{}], Bar[{}], Chr[{}]",
+	auto pCustomer { m_objManager.get_obj<Customer>(m_customerId) };
+	auto pBarber { m_objManager.get_obj<Barber>(m_barberId) };
+
+	m_output(std::format("[{}] CompleteHaircut Cust[{}]:[{}], Bar[{}]:[{}], Chr[{}]",
 				tick().to_string(),
-				m_customerId.get_id_number(), m_barberId.get_id_number(),
+				m_customerId.get_id_number(), get_level_str(pCustomer->get_level()),
+				m_barberId.get_id_number(), get_level_str(pBarber->get_level()),
 				m_chairId.get_id_number()));
 
+	m_customerQue.pop(pCustomer->get_level());
 	m_barberManager.free_barber(m_barberId);
 	m_chairManager.free_chair(m_chairId);
 	Tick startHaircutTime { tick() };
-	startHaircutTime.increament(1);
-	auto pCustomer { m_objManager.get_obj<Customer>(m_customerId) };
 	if (m_customerQue.get_que_size(pCustomer->get_level()) > 0)
 		m_eventManager.emplace<StartHaircutEvent>(
 				m_objManager,

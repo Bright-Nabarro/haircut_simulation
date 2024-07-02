@@ -63,6 +63,33 @@ void Tick::increament(size_t h, size_t m, size_t s)
 	s_tick2hmsTable[m_timestamp] = hms;
 }
 
+void Tick::decrease(size_t s)
+{
+	decltype(auto) thisHms { tick2hms() };
+    size_t totalSeconds = thisHms.hour * 3600 + thisHms.min * 60 + thisHms.sec;
+
+    if (s > totalSeconds)
+    {
+        throw std::logic_error { "Cannot decrease by more seconds than the current time" };
+    }
+
+    totalSeconds -= s;
+
+    size_t hour = totalSeconds / 3600;
+    totalSeconds %= 3600;
+    size_t min = totalSeconds / 60;
+    size_t sec = totalSeconds % 60;
+
+    Hms hms {
+        .hour = hour,
+        .min = min,
+        .sec = sec,
+    };
+
+    m_timestamp = hms2tick(hms);
+    s_tick2hmsTable[m_timestamp] = hms;
+}
+
 std::string Tick::to_string() const
 {
 	Hms hms { tick2hms() };
@@ -103,7 +130,20 @@ void Tick::check_valid(size_t h, size_t m, size_t s)
 		throw InvalidTimepoint { format("input second: {} invalid", s) };
 }
 
-
+std::string get_level_str(Level level)
+{
+	switch(level)
+	{
+	case Level::BEG:
+		return "BEG"s;
+	case Level::INT:
+		return "INT"s;
+	case Level::ADV:
+		return "ADV"s;
+	case Level::FAST:
+		return "FAST"s;
+	}
+}
 
 }		//namespace simulation
 

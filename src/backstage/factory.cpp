@@ -21,7 +21,7 @@ std::shared_ptr<Barber> BarberFactory::create_barber(Level level, double timeFac
 	if (level == Level::FAST)
 		throw InvalidLevel { "Invalid Level FAST in Barber constructor" };
 	check_time_factor(timeFactor);
-	auto pBarber { create_obj(level, timeFactor, totalTime) };
+	return create_obj(level, timeFactor, totalTime);
 }
 
 [[maybe_unused]]

@@ -64,6 +64,7 @@ class BarberManager
 public:
 	BarberManager(const Manager& manager);
 	virtual ~BarberManager() = default;
+	void update();
 	//注意：此方法会修改状态
 	std::shared_ptr<Barber> get_free_barber(Level level);
 	void free_barber(const Id<Barber>& barberId);

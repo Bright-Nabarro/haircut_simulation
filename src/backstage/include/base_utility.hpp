@@ -16,7 +16,6 @@ struct Hms
 
 Hms cvt_seconds_to_hms(size_t seconds);
 
-
 class Tick
 {
 public:
@@ -38,6 +37,8 @@ public:
 
 	void increament(size_t s)
 	{ increament(0, 0, s); }
+
+	void decrease(size_t s);
 
 	std::string to_string() const;
 
@@ -106,6 +107,7 @@ bool operator==(const std::reference_wrapper<const Id<UserClass>>& lhs,
 
 enum class Level { BEG = 0, INT = 1, ADV = 2, FAST = 3 };
 
+std::string get_level_str(Level level);
 
 }		//namespace simulation
 

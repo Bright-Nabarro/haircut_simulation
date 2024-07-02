@@ -54,7 +54,9 @@ public:
 	//这里支持FAST
 	[[maybe_unused]]
 	std::vector<double> push(const Id<Customer>& idCustomer);
-	const Id<Customer>& pop(Level level);
+	[[nodiscard]]
+	const Id<Customer>& top(Level level) const;
+	void pop(Level level);
 	
 private:
 	void ini_map();

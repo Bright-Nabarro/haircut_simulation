@@ -54,6 +54,12 @@
   "output": "src/io/CMakeFiles/SimIo_Lib.dir/io_barchr.cpp.o"
 },
 {
+  "directory": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/build/src/io",
+  "command": "/usr/sbin/c++ -DDEBUG -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/io/./include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/backstage/include -g -std=c++23 -Wall -Wextra -Weffc++ -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wconversion -Wsign-conversion -o CMakeFiles/SimIo_Lib.dir/io_parameter.cpp.o -c /home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/io/io_parameter.cpp",
+  "file": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/io/io_parameter.cpp",
+  "output": "src/io/CMakeFiles/SimIo_Lib.dir/io_parameter.cpp.o"
+},
+{
   "directory": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/build/src/main",
   "command": "/usr/sbin/c++ -DDEBUG -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/./include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/../backstage/include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/../io/include -I/home/lin17_2/workspace/contest/big_work/data_structure/simulation/extern/include -g -std=c++23 -Wall -Wextra -Weffc++ -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wconversion -Wsign-conversion -o CMakeFiles/app.dir/business_logic.cpp.o -c /home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/business_logic.cpp",
   "file": "/home/lin17_2/workspace/contest/big_work/data_structure/simulation/src/main/business_logic.cpp",

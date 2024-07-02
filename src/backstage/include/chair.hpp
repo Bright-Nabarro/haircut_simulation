@@ -47,6 +47,7 @@ class ChairManager
 public:
 	ChairManager(const Manager& manager);
 	virtual ~ChairManager() = default;
+	void update();
 	std::shared_ptr<Chair> get_free_chair();
 	void free_chair(const Id<Chair>& chairId);
 private:

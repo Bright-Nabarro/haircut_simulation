@@ -101,6 +101,12 @@ BarberManager<Manager>::BarberManager(const Manager& manager):
 	m_freeLevelTable { construct_map_set() },
 	m_busyLevelTable { construct_map_set() }
 {
+	update();
+}
+
+template<typename Manager>
+void BarberManager<Manager>::update()
+{
 	for (auto itr { m_manager.template cbegin<Barber>() };
 		 itr != m_manager.template cend<Barber>();
 		 ++itr)

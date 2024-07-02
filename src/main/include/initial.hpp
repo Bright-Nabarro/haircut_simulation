@@ -14,6 +14,7 @@ using MainCustWaitingQue = simulation::CustomerWaitingQue<MainObjManager>;
 using MainBarberManager = simulation::BarberManager<MainObjManager>;
 using MainChairManager = simulation::ChairManager<MainObjManager>;
 
+void initial_parameter();
 
 void load_saved_data(MainObjManager& objManager);
 

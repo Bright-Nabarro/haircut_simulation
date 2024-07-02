@@ -83,6 +83,12 @@ ChairManager<Manager>::ChairManager(const Manager& manager) :
 	m_freeChairs {},
 	m_busyChairs {}
 {
+	update();
+}
+
+template<typename Manager>
+void ChairManager<Manager>::update()
+{
 	for (auto itr { m_manager.template cbegin<Chair>() };
 		 itr != m_manager.template cend<Chair>();
 		 ++itr)
