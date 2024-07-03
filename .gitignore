@@ -6,3 +6,4 @@ bin/
 .gdb_history
 lib/
 data/
+compile_commands.json

@@ -42,7 +42,7 @@ void printManager(MainObjManager& objManager)
 
 void set_step()
 {
-	g_useStep = true;
+	g_useStep ^= 1;
 }
 
 int main_loop(MainObjManager& objManager, MainEventManager& eventManager, SimStatistics& stics)
@@ -65,6 +65,11 @@ int main_loop(MainObjManager& objManager, MainEventManager& eventManager, SimSta
 			getline(cin, keyEnter);
 			if (keyEnter == "q" || keyEnter == "quit")
 				exit(0);
+			if (keyEnter == "c" || keyEnter == "continue")
+			{
+				set_step();
+				println("----------------------------------------------------------------");
+			}
 		}
 		else
 		{
