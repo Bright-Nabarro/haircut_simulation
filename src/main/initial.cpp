@@ -1,7 +1,6 @@
 #include <print>
 #include <random>
 #include <map>
-#include <iostream>
 #include "initial.hpp"
 #include "io_barchr.hpp"
 #include "io_parameter.hpp"
@@ -41,17 +40,17 @@ void initial_parameter()
 	}
 }
 
-void load_saved_data(MainObjManager& objManager)
+void load_saved_data()
 {
-	load_barber(objManager);
-	load_chair(objManager);
+	load_barber();
+	load_chair();
 }
 
 void setting_parameter()
 {
 }
 
-void generate_initial_event(MainObjManager& objManager,
+void generate_initial_event(
 		MainEventManager& eventManager, function<void(string_view sv)> output,
 		MainCustWaitingQue& customerWaitingQue, MainBarberManager& barberManager,
 		MainChairManager& chairManager,
@@ -69,7 +68,7 @@ void generate_initial_event(MainObjManager& objManager,
 		g_maxBearingLenRange.first, g_maxBearingLenRange.second
 	};
 	
-	CustomerFactory customerFactory { objManager };
+	CustomerFactory customerFactory;
 
 	for(size_t i {0}; i < g_customerNum; i++)
 	{
@@ -77,7 +76,6 @@ void generate_initial_event(MainObjManager& objManager,
 			static_cast<Level>(distLevelNum(gen)), distTimeFactor(gen),
 			distMaxBearingLen(gen));
 		eventManager.emplace<CustomerArrivalEvent>(
-			objManager,
 			eventManager,
 			customerWaitingQue,
 			barberManager,

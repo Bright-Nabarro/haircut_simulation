@@ -5,12 +5,10 @@ namespace simulation
 
 	template<typename TyManager>
 	bool save_barber(const TyManager& objManager);
-	template<typename TyManager>
-	bool load_barber(TyManager& objManager);
+	bool load_barber();
 	template<typename TyManager>
 	bool save_chair(const TyManager& objManager);
-	template<typename TyManager>
-	bool load_chair(TyManager& objManager);
+	bool load_chair();
 
 #ifdef DEBUG
 	struct IoBarA {};

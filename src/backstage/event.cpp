@@ -10,7 +10,7 @@ namespace simulation
 /*
  *	Event,
  */
-Event::Event( SimulationManager& objManager,
+Event::Event(
 		EventManager<Event>& eventManager,
 		CustomerWaitingQue<SimulationManager>& customerQue,
 		BarberManager<SimulationManager>& barberManager,
@@ -20,7 +20,6 @@ Event::Event( SimulationManager& objManager,
 		const std::map<Level, double>& feeSchedule,
 		std::function<void(std::string_view)> output,
 		SimStatistics& stics) :
-	m_objManager 	{ objManager },
 	m_eventManager 	{ eventManager },
 	m_customerQue 	{ customerQue },
 	m_barberManager { barberManager },
@@ -47,7 +46,6 @@ constexpr double Event::base_time() const
  */
 
 CustomerArrivalEvent::CustomerArrivalEvent(
-		SimulationManager& objManager,
 		EventManager<Event>& eventManager,
 		CustomerWaitingQue<SimulationManager>& customerQue,
 		BarberManager<SimulationManager>& barberManager,
@@ -60,9 +58,9 @@ CustomerArrivalEvent::CustomerArrivalEvent(
 		const Id<Customer>& customerId
 		):
 
-	Event { objManager, eventManager, customerQue, barberManager,
+	Event { eventManager, customerQue, barberManager,
 		chairManager, tick, baseTime, feeSchedule, output, stics},
-	m_pCustomer { objManager.get_obj<Customer>(customerId) }
+	m_pCustomer { m_objManager.get_obj<Customer>(customerId) }
 { }
 
 void CustomerArrivalEvent::execve()
@@ -77,7 +75,6 @@ void CustomerArrivalEvent::execve()
 	if (queLen == 1) 	//如果相应的顾客队列为空(自己推入),生成开始理发事件
 	{
 		m_eventManager.emplace<StartHaircutEvent>(
-			m_objManager,
 			m_eventManager,
 			m_customerQue,
 			m_barberManager,
@@ -95,7 +92,6 @@ void CustomerArrivalEvent::execve()
 		Tick leaveTick { tick() };
 		leaveTick.increament(1);
 		m_eventManager.emplace<CustomerLeaveEvent>(
-			m_objManager,
 			m_eventManager,
 			m_customerQue,
 			m_barberManager,
@@ -130,7 +126,7 @@ Tick CustomerArrivalEvent::start_haircut_time(const std::vector<double>& factorL
 /*
  * StartHaircutEvent 
  */
-StartHaircutEvent::StartHaircutEvent(SimulationManager& objManager,
+StartHaircutEvent::StartHaircutEvent(
 		EventManager<Event>& eventManager,
 		CustomerWaitingQue<SimulationManager>& customerQue,
 		BarberManager<SimulationManager>& barberManager,
@@ -141,7 +137,7 @@ StartHaircutEvent::StartHaircutEvent(SimulationManager& objManager,
 		std::function<void(std::string_view)> output,
 		SimStatistics& stics,
 		Level level) :
-	Event { objManager, eventManager, customerQue, barberManager, chairManager,
+	Event { eventManager, customerQue, barberManager, chairManager,
 		tick, baseTime, feeSchedule, output, stics},
 	m_level { level }
 {
@@ -172,7 +168,6 @@ void StartHaircutEvent::execve()
 	completeTick.increament(hms.hour, hms.min, hms.sec);
 
 	m_eventManager.emplace<CompleteHaircutEvent>(
-			m_objManager,
 			m_eventManager,
 			m_customerQue,
 			m_barberManager,
@@ -197,7 +192,7 @@ void StartHaircutEvent::execve()
 /*
  * CustomerLeaveEvent
  */
-CustomerLeaveEvent::CustomerLeaveEvent(SimulationManager& objManager,
+CustomerLeaveEvent::CustomerLeaveEvent(
 		EventManager<Event>& eventManager,
 		CustomerWaitingQue<SimulationManager>& customerQue,
 		BarberManager<SimulationManager>& barberManager,
@@ -208,9 +203,9 @@ CustomerLeaveEvent::CustomerLeaveEvent(SimulationManager& objManager,
 		std::function<void(std::string_view)> output,
 		SimStatistics& stics,
 		const Id<Customer>& customerId) :
-	Event { objManager, eventManager, customerQue, barberManager, chairManager, 
+	Event { eventManager, customerQue, barberManager, chairManager, 
 		tick, baseTime, feeSchedule, output, stics},
-	m_pCustomer {  objManager.get_obj<Customer>(customerId) }
+	m_pCustomer {  m_objManager.get_obj<Customer>(customerId) }
 { }
 
 void CustomerLeaveEvent::execve()
@@ -225,7 +220,7 @@ void CustomerLeaveEvent::execve()
  * CompleteHaircutEvent
  * 回收Barber, Chair资源
  */
-CompleteHaircutEvent::CompleteHaircutEvent(SimulationManager& objManager,
+CompleteHaircutEvent::CompleteHaircutEvent(
 		EventManager<Event>& eventManager,
 		CustomerWaitingQue<SimulationManager>& customerQue,
 		BarberManager<SimulationManager>& barberManager,
@@ -238,7 +233,7 @@ CompleteHaircutEvent::CompleteHaircutEvent(SimulationManager& objManager,
 		const Id<Customer>& customerId,
 		const Id<Barber>& barberId,
 		const Id<Chair>& chairId) :
-	Event { objManager, eventManager, customerQue, barberManager,
+	Event { eventManager, customerQue, barberManager,
 		chairManager, tick, baseTime, feeSchedule, output, stics},
 	m_customerId { customerId },
 	m_barberId { barberId },
@@ -263,7 +258,6 @@ void CompleteHaircutEvent::execve()
 	Tick startHaircutTime { tick() };
 	if (m_customerQue.get_que_size(pCustomer->get_level()) > 0)
 		m_eventManager.emplace<StartHaircutEvent>(
-				m_objManager,
 				m_eventManager,
 				m_customerQue,
 				m_barberManager,

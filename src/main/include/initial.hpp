@@ -16,11 +16,11 @@ using MainChairManager = simulation::ChairManager<MainObjManager>;
 
 void initial_parameter();
 
-void load_saved_data(MainObjManager& objManager);
+void load_saved_data();
 
 void setting_parameter();
 
-void generate_initial_event(MainObjManager& objManager, MainEventManager& eventManager,
+void generate_initial_event(MainEventManager& eventManager,
 		std::function<void(std::string_view sv)> output,
 		MainCustWaitingQue& customerWaitingQue, MainBarberManager& barberManager,
 		MainChairManager& chairManager,

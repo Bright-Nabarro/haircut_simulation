@@ -52,8 +52,7 @@ bool save_barber(const TyManager& objManager)
 }
 
 //如果无法读取预期数据，则忽略此行
-template<typename TyManager>
-bool load_barber(TyManager& objManager)
+bool load_barber()
 {
 	if (!fs::exists(dir))
 	{
@@ -82,7 +81,7 @@ bool load_barber(TyManager& objManager)
 		if (levelNum == -1 || timeFactor == 0 || totalTime == -1 || netIncome == -1)
 			continue;
 
-		BarberFactory barberFactory { objManager };
+		BarberFactory barberFactory;
 		barberFactory.create_barber(static_cast<Level>(levelNum), timeFactor, totalTime, netIncome);
 		successCounter++;
 	}
@@ -113,8 +112,7 @@ bool save_chair(const TyManager& objManager)
 	return true;
 }
 
-template<typename TyManager>
-bool load_chair(TyManager& objManager)
+bool load_chair()
 {
 	if (!fs::exists(dir))
 	{
@@ -131,7 +129,7 @@ bool load_chair(TyManager& objManager)
 	if ( size <= 0 )
 		return false;
 
-	ChairFactory chairFactory{ objManager };
+	ChairFactory chairFactory;
 	for (long i {0}; i < size; i++)
 	{
 		chairFactory.create_chair();
@@ -142,9 +140,7 @@ bool load_chair(TyManager& objManager)
 using MainObjManager = ObjectManager<Customer, Barber, Chair>;
 
 template bool save_barber<MainObjManager>(const MainObjManager&);
-template bool load_barber<MainObjManager>(MainObjManager&);
 template bool save_chair<MainObjManager>(const MainObjManager&);
-template bool load_chair<MainObjManager>(MainObjManager&);
 
 
 //工厂已经全特化ObjManager为具体类型，不适用其他类型

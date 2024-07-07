@@ -6,7 +6,7 @@
 using namespace std;
 using namespace simulation;
 
-static void initial_data(MainObjManager& objManager,
+static void initial_data(
 		MainEventManager& eventManager, Display& display, 
 		MainCustWaitingQue& customerWaitingQue, MainBarberManager& barberManager,
 		MainChairManager& chairManager, SimStatistics& stics
@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
 	SimStatistics stics;
 	Display display { objManager, customerWaitingQue, true };
 	
-	initial_data(objManager, eventManager, display,
+	initial_data(eventManager, display,
 			customerWaitingQue, barberManager, chairManager, stics);
 
 	if (argc > 1)
@@ -39,17 +39,16 @@ int main(int argc, char* argv[])
 	display_stics(objManager, stics);
 }
 
-static void initial_data(MainObjManager& objManager,
+static void initial_data(
 		MainEventManager& eventManager, Display& display,
 		MainCustWaitingQue& customerWaitingQue, MainBarberManager& barberManager,
 		MainChairManager& chairManager, SimStatistics& stics)
 { 
 	initial_parameter();
-	load_saved_data(objManager);
+	load_saved_data();
 	barberManager.update();
 	chairManager.update();
 	setting_parameter();
-	generate_initial_event(objManager, eventManager,
-			[&display](string_view sv){ display(sv); },
+	generate_initial_event(eventManager, [&display](string_view sv){ display(sv); },
 			customerWaitingQue, barberManager, chairManager, stics);
 }

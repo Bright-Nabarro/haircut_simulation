@@ -19,7 +19,7 @@ class Event
 protected:
 	using SimulationManager = ObjectManager<Customer, Barber, Chair>;
 public:
-	Event(	SimulationManager& objManager,
+	Event(
 			EventManager<Event>& eventManager,
 			CustomerWaitingQue<SimulationManager>& customerQue,
 			BarberManager<SimulationManager>& barberManager,
@@ -32,7 +32,7 @@ public:
 	virtual ~Event() = default;
 protected:
 	virtual void execve() = 0;
-	SimulationManager& m_objManager;
+	SimulationManager m_objManager {};
 	EventManager<Event>& m_eventManager;
 	CustomerWaitingQue<SimulationManager>& m_customerQue;
 	BarberManager<SimulationManager>& m_barberManager;
@@ -55,7 +55,6 @@ class CustomerArrivalEvent: public Event
 {
 public:
 	CustomerArrivalEvent(
-			SimulationManager& objManager,
 			EventManager<Event>& eventManager,
  			CustomerWaitingQue<SimulationManager>& customerQue,
 			BarberManager<SimulationManager>& barberManager,
@@ -78,7 +77,6 @@ class StartHaircutEvent: public Event
 {
 public:
 	StartHaircutEvent(
-			SimulationManager& objManager,
 			EventManager<Event>& eventManager,
 			CustomerWaitingQue<SimulationManager>& customerQue,
 			BarberManager<SimulationManager>& barberManager,
@@ -99,7 +97,6 @@ class CustomerLeaveEvent: public Event
 {
 public:
 	CustomerLeaveEvent(
-			SimulationManager& objManager,
 			EventManager<Event>& eventManager,
 			CustomerWaitingQue<SimulationManager>& customerQue,
 			BarberManager<SimulationManager>& barberManager,
@@ -120,7 +117,7 @@ private:
 class CompleteHaircutEvent: public Event
 {
 public:
-	CompleteHaircutEvent(SimulationManager& objManager,
+	CompleteHaircutEvent(
 			EventManager<Event>& eventManager,
 			CustomerWaitingQue<SimulationManager>& customerQue,
 			BarberManager<SimulationManager>& barberManager,

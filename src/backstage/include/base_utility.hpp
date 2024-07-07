@@ -59,7 +59,6 @@ private:
 
 
 /*
- * 模板类型仅作为不同类的内部计数器的区分
  *
  */
 template<typename UserClass>

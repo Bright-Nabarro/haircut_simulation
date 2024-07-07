@@ -12,8 +12,7 @@ template<typename Ty, typename Manager = ObjectManager<Ty>>
 class ObjFactory
 {
 public:
-	ObjFactory(Manager& objectManager):
-		m_objectManager { objectManager }
+	ObjFactory()
 	{ }
 	virtual ~ObjFactory() = default;
 	
@@ -27,7 +26,7 @@ public:
 	}
 
 private:
-	Manager& m_objectManager;
+	Manager m_objectManager{};
 };
 
 using UseObjManager = ObjectManager<Customer, Barber, Chair>;
