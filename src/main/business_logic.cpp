@@ -98,15 +98,32 @@ void display_stics(MainObjManager& objManager, SimStatistics& stics)
 	Hms wrapUpHms = cvt_seconds_to_hms(stics.get_wrap_up_time());
 	println("Wrap up time {:02}h {:02}m {:02}s",
 			wrapUpHms.hour, wrapUpHms.min, wrapUpHms.sec);
-	double totalIncome { 0 }, totalWorktime { 0 };
+	double  totalWorktime { 0 };
+	double incomeBeg {0}, incomeInt{0}, incomeAdv{0};
 	for (auto itr { objManager.cbegin<Barber>() };
 		 itr != objManager.cend<Barber>();
 		 ++itr)
 	{
-		totalIncome += itr->second->get_income();
+		switch(itr->second->get_level())
+		{
+		case Level::BEG:
+			incomeBeg += itr->second->get_income();
+			break;
+		case Level::INT:
+			incomeInt += itr->second->get_income();
+			break;
+		case Level::ADV:
+			incomeAdv += itr->second->get_income();
+			break;
+		case Level::FAST:
+			break;
+		}
 		totalWorktime += itr->second->get_total_worktime();
 	}
-	println("Total net income {}", totalIncome);
+	println("BEG net income {}", incomeBeg);
+	println("INT net income {}", incomeInt);
+	println("ADV net income {}", incomeAdv);
+	println("Total net income {}", incomeBeg + incomeInt + incomeAdv);
 	Hms totalWorkHms = cvt_seconds_to_hms(static_cast<size_t>(round(totalWorktime)));
 	println("Total barbers work time {:02}h {:02}m {:02}s",
 			totalWorkHms.hour, totalWorkHms.min, totalWorkHms.sec);

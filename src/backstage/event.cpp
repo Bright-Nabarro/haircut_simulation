@@ -82,7 +82,7 @@ void CustomerArrivalEvent::execve()
 			m_customerQue,
 			m_barberManager,
 			m_chairManager,
-			startHaircutTime,
+			tick(),
 			base_time(),
 			m_feeSchedule,
 			m_output,

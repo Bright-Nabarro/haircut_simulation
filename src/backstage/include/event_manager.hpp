@@ -33,7 +33,7 @@ public:
 		m_events.erase(itr);
 	}
 
-	Tick get_next_event_tick()
+	Tick get_next_event_tick() const
 	{
 		if (empty())
 			throw std::logic_error("No events in EventManager");
