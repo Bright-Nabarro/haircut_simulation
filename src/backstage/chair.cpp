@@ -78,8 +78,7 @@ void Chair::check_bind() const
 
 
 template<typename Manager>
-ChairManager<Manager>::ChairManager(const Manager& manager) :
-	m_manager { manager },
+ChairManager<Manager>::ChairManager() :
 	m_freeChairs {},
 	m_busyChairs {}
 {

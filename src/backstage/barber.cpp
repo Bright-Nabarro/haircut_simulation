@@ -108,8 +108,7 @@ void Barber::add_income(double income)
 }
 
 template<typename Manager>
-BarberManager<Manager>::BarberManager(const Manager& manager):
-	m_manager { manager },
+BarberManager<Manager>::BarberManager():
 	m_freeLevelTable { construct_map_set() },
 	m_busyLevelTable { construct_map_set() }
 {

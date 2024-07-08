@@ -5,10 +5,8 @@ using namespace std;
 namespace simulation
 {
 
-Display::Display(MainObjManager& objManager,
-		CustomerWaitingQue<MainObjManager>& customerQue,
+Display::Display( CustomerWaitingQue<MainObjManager>& customerQue,
 		bool printSimStatus):
-	m_objManager { objManager },
 	m_customerQue { customerQue },
 	m_printSimStatus { printSimStatus }
 { }

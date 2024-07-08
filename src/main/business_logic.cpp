@@ -45,9 +45,8 @@ void set_step()
 	g_useStep ^= 1;
 }
 
-int main_loop(MainObjManager& objManager, MainEventManager& eventManager, SimStatistics& stics)
+int main_loop(MainEventManager& eventManager, SimStatistics& stics)
 {
-	(void)objManager;
 	Tick lastTick {0, 0, 0};
 	while(!eventManager.empty())
 	{
@@ -90,8 +89,9 @@ int main_loop(MainObjManager& objManager, MainEventManager& eventManager, SimSta
 	return 0;
 }
 
-void display_stics(MainObjManager& objManager, SimStatistics& stics)
+void display_stics(SimStatistics& stics)
 {
+	MainObjManager objManager;
 	println("\n[Statistics]");
 	println("Customer average cost time {} seconds", stics.avg_waiting_time());
 	println("Queue average length {}", stics.avg_que_length());

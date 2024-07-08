@@ -45,13 +45,13 @@ template<typename Manager>
 class ChairManager
 {
 public:
-	ChairManager(const Manager& manager);
+	ChairManager();
 	virtual ~ChairManager() = default;
 	void update();
 	std::shared_ptr<Chair> get_free_chair();
 	void free_chair(const Id<Chair>& chairId);
 private:
-	const Manager& m_manager;
+	const Manager m_manager{};
 	std::unordered_set<std::reference_wrapper<const Id<Chair>>> m_freeChairs;
 	std::unordered_set<std::reference_wrapper<const Id<Chair>>> m_busyChairs;
 };

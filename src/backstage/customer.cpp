@@ -66,8 +66,7 @@ void Customer::start_cuting_hear() noexcept
 }
 
 template<typename Manager>
-CustomerWaitingQue<Manager>::CustomerWaitingQue(const Manager& manager) :
-	m_manager { manager },
+CustomerWaitingQue<Manager>::CustomerWaitingQue() :
 	m_waitingQues {0}
 {
 	ini_map();

@@ -13,14 +13,13 @@ class Display
 using MainObjManager = ObjectManager<Customer, Barber, Chair>;
 
 public:
-	Display(MainObjManager& objManager,
-			CustomerWaitingQue<MainObjManager>& customerQue,
+	Display(CustomerWaitingQue<MainObjManager>& customerQue,
 			bool printSimStatus = false);
 	void operator()(std::string_view sv);
 private:
 	void print_sim_status();
 	inline static const Level s_kLevels[] { Level::BEG, Level::INT, Level::ADV };
-	MainObjManager& m_objManager;
+	MainObjManager m_objManager {};
 	CustomerWaitingQue<MainObjManager>& m_customerQue;
 	const bool m_printSimStatus;
 };

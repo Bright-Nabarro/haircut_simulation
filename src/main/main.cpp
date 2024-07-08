@@ -15,13 +15,12 @@ static void initial_data(
 
 int main(int argc, char* argv[])
 {
-	MainObjManager objManager;
 	MainEventManager eventManager;
-	MainCustWaitingQue customerWaitingQue { objManager };
-    MainBarberManager barberManager { objManager };
-	MainChairManager chairManager { objManager };
+	MainCustWaitingQue customerWaitingQue;
+    MainBarberManager barberManager;
+	MainChairManager chairManager;
 	SimStatistics stics;
-	Display display { objManager, customerWaitingQue, true };
+	Display display { customerWaitingQue, true };
 	
 	initial_data(eventManager, display,
 			customerWaitingQue, barberManager, chairManager, stics);
@@ -33,10 +32,10 @@ int main(int argc, char* argv[])
 			set_step();
 	}
 
-	if ( auto ret { main_loop(objManager, eventManager, stics) }; ret != 0 )
+	if ( auto ret { main_loop(eventManager, stics) }; ret != 0 )
 		return ret;
 
-	display_stics(objManager, stics);
+	display_stics(stics);
 }
 
 static void initial_data(

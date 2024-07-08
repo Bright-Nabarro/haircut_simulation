@@ -69,7 +69,7 @@ template<typename Manager>
 class BarberManager
 {
 public:
-	BarberManager(const Manager& manager);
+	BarberManager();
 	virtual ~BarberManager() = default;
 	void update();
 	//注意：此方法会修改状态
@@ -77,7 +77,7 @@ public:
 	void free_barber(const Id<Barber>& barberId);
 private:
 	decltype(auto) construct_map_set();
-	const Manager& m_manager;
+	const Manager m_manager {};
 	std::unordered_map<Level, std::unordered_set<std::reference_wrapper<const Id<Barber>>>> m_freeLevelTable;
 	std::unordered_map<Level, std::unordered_set<std::reference_wrapper<const Id<Barber>>>> m_busyLevelTable;
 };

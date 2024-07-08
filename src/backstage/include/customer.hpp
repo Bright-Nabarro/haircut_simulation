@@ -47,7 +47,7 @@ template<typename Manager>
 class CustomerWaitingQue
 {
 public:
-	CustomerWaitingQue(const Manager& manager);
+	CustomerWaitingQue();
 	virtual ~CustomerWaitingQue() = default;
 	//以人数作为比较依据，level不包含FAST
 	size_t get_que_size(Level level) const;
@@ -63,7 +63,7 @@ private:
 	Level find_min_que() const;
 	auto& check_level(Level level);
 	const auto& check_level(Level level) const;
-	const Manager& m_manager;
+	const Manager m_manager {};
 	std::unordered_map<Level,
 		std::deque<std::shared_ptr<Id<Customer>>>> m_waitingQues;
 };
