@@ -7,47 +7,70 @@
 #include "barber.hpp"
 #include "chair.hpp"
 #include "event_manager.hpp"
+#include "tracking.hpp"
 
 namespace simulation
 {
 
-class SimStatistics;
+class Event;
 
-class Event
+class EventHandlerComponents
 {
-	friend EventManager<Event>;
-protected:
 	using SimulationManager = ObjectManager<Customer, Barber, Chair>;
+
 public:
-	Event(
-			EventManager<Event>& eventManager,
-			CustomerWaitingQue<SimulationManager>& customerQue,
-			BarberManager<SimulationManager>& barberManager,
-			ChairManager<SimulationManager>& chairManager,
-			const Tick& tick,
-			double baseTime,
-			const std::map<Level, double>& feeSchedule,
-			std::function<void(std::string_view)> output,
-			SimStatistics& stics);
-	virtual ~Event() = default;
-protected:
-	virtual void execve() = 0;
+	auto get_obj_manager() 			-> SimulationManager&;
+	auto get_event_manager() 		-> EventManager<Event>&;
+	auto get_customer_que() 		-> CustomerWaitingQue<SimulationManager>&;
+	auto get_barber_manager() 		-> BarberManager<SimulationManager>&;
+	auto get_chair_manager() 		-> ChairManager<SimulationManager>&;
+	auto get_tick() const 			-> Tick;
+	auto get_base_time() const 		-> double;
+	auto get_fee_schedule() const 	-> const std::map<Level, double>&;
+	auto get_stics() 				-> SimStatistics&;
+	template<typename... Args>
+	void invoke_output(Args... args) const
+	{
+		m_output(args...);
+	}
+
+private:
+	EventHandlerComponents(
+		EventManager<Event>& eventManager,
+		CustomerWaitingQue<SimulationManager>& customerQue,
+		BarberManager<SimulationManager>& barberManager,
+		ChairManager<SimulationManager>& chairManager,
+		const Tick& tick,
+		double baseTime,
+		const std::map<Level, double>& feeSchedule,
+		std::function<void(std::string_view)> output,
+		SimStatistics& stics);
+
 	SimulationManager m_objManager {};
 	EventManager<Event>& m_eventManager;
 	CustomerWaitingQue<SimulationManager>& m_customerQue;
 	BarberManager<SimulationManager>& m_barberManager;
 	ChairManager<SimulationManager>& m_chairManager;
-public:
-	Tick tick() const;
-protected:
-	constexpr double base_time() const;
-private:
-	Tick m_tick;
+	const Tick& m_tick;
 	double m_baseTime;
-protected:
 	const std::map<Level, double>& m_feeSchedule;
 	std::function<void(std::string_view)> m_output;
 	SimStatistics& m_stics;
+};
+
+class Event
+{
+	friend EventManager<Event>;
+
+public:
+	virtual ~Event() = default;
+	virtual void execve() = 0;
+	auto get_tick() const -> Tick
+	{ return m_cpts.get_tick(); }
+
+protected:
+	Event(EventHandlerComponents& paramenters);
+	EventHandlerComponents m_cpts;
 };
 
 
@@ -55,17 +78,9 @@ class CustomerArrivalEvent: public Event
 {
 public:
 	CustomerArrivalEvent(
-			EventManager<Event>& eventManager,
- 			CustomerWaitingQue<SimulationManager>& customerQue,
-			BarberManager<SimulationManager>& barberManager,
-			ChairManager<SimulationManager>& chairManager,
-			const Tick& tick,
-			double baseTime,
-			const std::map<Level, double>& feeSchedule,
-			std::function<void(std::string_view)> output,
-			SimStatistics& stics,
-			const Id<Customer>& customerId
-			);
+		EventHandlerComponents& cpts,
+		const Id<Customer>& customerId
+	);
 private:
 	void execve() override;
 	Tick start_haircut_time(const std::vector<double>& factorList) const;
@@ -127,35 +142,13 @@ public:
 			const std::map<Level, double>& feeSchedule,
 			std::function<void(std::string_view)> output,
 			SimStatistics& stics,
-			const Id<Customer>& customerId,
-			const Id<Barber>& barberId,
 			const Id<Chair>& chairId);
 
 private:
+	std::shared_ptr<Chair> m_pChair;
 	const Id<Customer>& m_customerId;
 	const Id<Barber>& m_barberId;
-	const Id<Chair>& m_chairId;
 	void execve() override;
 };
-
-class SimStatistics
-{
-public:
-	[[nodiscard]]
-	double avg_waiting_time() const;
-	[[nodiscard]]
-	double avg_que_length() const;
-	[[nodiscard]]
-	size_t get_wrap_up_time() const;
-	void add_waiting_time(size_t waitingTime);
-	void add_que_length(size_t queLength);
-	void set_wrap_up_time(size_t duration);
-private:
-	std::vector<size_t> m_waitingTimeVec;
-	std::vector<size_t> m_queLengthVec;
-	//收尾工作时间
-	size_t m_wrapUpTime { std::numeric_limits<size_t>::max() };
-};
-
 
 }	//namespace simulation

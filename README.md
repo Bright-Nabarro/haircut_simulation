@@ -37,8 +37,13 @@ make --build build
 ```
 
 3. **运行项目**
+- 直接输出模式
 ```bash
 bin/app
+```
+- 步进模式
+```bash
+bin/app -n
 ```
 
 
