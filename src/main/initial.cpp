@@ -75,16 +75,19 @@ void generate_initial_event(
 		auto pCustomer = customerFactory.create_customer(
 			static_cast<Level>(distLevelNum(gen)), distTimeFactor(gen),
 			distMaxBearingLen(gen));
-		eventManager.emplace<CustomerArrivalEvent>(
+		EventHandlerComponents cpts {
 			eventManager,
 			customerWaitingQue,
 			barberManager,
 			chairManager,
-			random_tick(),
-			g_baseTime,
+			static_cast<double>(g_baseTime),
 			g_feeSchedule,
 			output,
-			stics,
+			stics
+		};
+		eventManager.emplace<CustomerArrivalEvent>(
+			cpts,
+			random_tick(),
 			pCustomer->get_id()
 		);
 	}
